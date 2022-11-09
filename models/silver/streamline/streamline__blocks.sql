@@ -16,4 +16,4 @@ SELECT
 FROM
     TABLE(streamline.udtf_get_base_table({{block_height}}))
 WHERE
-    height >= 1000000 -- Highest block the archive has available
+    height >= 5200791 -- Highest block the archive has available
