@@ -10,7 +10,7 @@ BEGIN
         SELECT
             COUNT(1)
         FROM
-            {{ ref('streamline__blocks_realtime') }}
+            {{ ref('streamline__transactions_realtime') }}
     );
 if (
         row_cnt > 0
