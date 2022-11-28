@@ -32,7 +32,6 @@ models:
 #   +store_failures: true # all tests
 
 on-run-start:
-  - "{{ create_sps() }}"
   - "{{ create_udfs() }}"
 
 # Configuring models
