@@ -1,7 +1,7 @@
-{% macro create_sp_get_blocks_realtime() %}
+{% macro create_sp_get_cosmos_blocks_realtime() %}
     {% set sql %}
     CREATE
-    OR REPLACE PROCEDURE streamline.sp_get_blocks_realtime() returns variant LANGUAGE SQL AS $$
+    OR REPLACE PROCEDURE streamline.sp_get_cosmos_blocks_realtime() returns variant LANGUAGE SQL AS $$
 DECLARE
     RESULT variant;
 row_cnt INTEGER;
@@ -16,7 +16,7 @@ if (
         row_cnt > 0
     ) THEN RESULT:= (
         SELECT
-            streamline.udf_get_blocks()
+            streamline.udf_get_cosmos_blocks()
     );
     ELSE RESULT:= NULL;
 END if;
