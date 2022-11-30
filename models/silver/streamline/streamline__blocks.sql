@@ -5,10 +5,10 @@
 
 
 {% if execute %}
-{# {% set height = run_query('SELECT streamline.udf_get_cosmos_chainhead()') %}
+{% set height = run_query('SELECT streamline.udf_get_cosmos_chainhead()') %}
 {% set block_height = height.columns[0].values()[0] %}
-{% else %} #}
-{% set block_height = 12000000 %}
+{% else %}
+{% set block_height = 13000000 %}
 {% endif %}
 
 SELECT
