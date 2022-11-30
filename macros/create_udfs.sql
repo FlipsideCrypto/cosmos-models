@@ -11,6 +11,7 @@
         {% set sql %}
         {{ create_udf_get_cosmos_blocks() }}
         {{ create_udf_get_cosmos_transactions() }}
+        {{ create_udf_get_cosmos_chainhead() }}
 
         {% endset %}
         {% do run_query(sql) %}
