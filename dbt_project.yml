@@ -31,9 +31,6 @@ models:
 # tests:
 #   +store_failures: true # all tests
 
-on-run-start:
-  - "{{ create_udfs() }}"
-
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
