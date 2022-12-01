@@ -11,5 +11,5 @@ SELECT
 FROM 
      {{ source(
     'bronze_streamline',
-    'txs_details'
+    'tx_search'
   ) }} 
