@@ -6,7 +6,7 @@
     )
 ) }}
 
-{% for item in range(1300) %}
+{% for item in range(520, 1300) %}
     (
 
         SELECT
