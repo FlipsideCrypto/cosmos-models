@@ -8,34 +8,34 @@
 SELECT
     block_id,
     COALESCE(
-        data :result :block :header :time :: TIMESTAMP,
-        data :block :header :time :: TIMESTAMP,
-        data :result :block :header :timestamp :: TIMESTAMP,
-        data :block :header :timestamp :: TIMESTAMP
+        DATA :result :block :header :time :: TIMESTAMP,
+        DATA :block :header :time :: TIMESTAMP,
+        DATA :result :block :header :timestamp :: TIMESTAMP,
+        DATA :block :header :timestamp :: TIMESTAMP
     ) AS block_timestamp,
     COALESCE(
-        data :result :block :header :chain_id :: STRING,
-        data :block :header :chain_id :: STRING
+        DATA :result :block :header :chain_id :: STRING,
+        DATA :block :header :chain_id :: STRING
     ) AS chain_id,
     COALESCE(
         ARRAY_SIZE(
-            data :result :block :data :txs
+            DATA :result :block :data :txs
         ) :: NUMBER,
         ARRAY_SIZE(
-            data :block :data :txs
+            DATA :block :data :txs
         ) :: NUMBER
     ) AS tx_count,
     COALESCE(
-        data :result :block :header :proposer_address :: STRING,
-        data :block :header :proposer_address :: STRING
+        DATA :result :block :header :proposer_address :: STRING,
+        DATA :block :header :proposer_address :: STRING
     ) AS proposer_address,
     COALESCE(
-        data :result :block :header :validators_hash :: STRING,
-        data :block :header :validators_hash :: STRING
+        DATA :result :block :header :validators_hash :: STRING,
+        DATA :block :header :validators_hash :: STRING
     ) AS validator_hash,
     COALESCE(
-        data :result :block :header,
-        data :block :header
+        DATA :result :block :header,
+        DATA :block :header
     ) AS header,
     _partition_by_block_id,
     concat_ws(
@@ -46,9 +46,9 @@ SELECT
 FROM
     {{ ref('bronze__blocks') }}
 WHERE
-    value :data :error IS NULL
-    AND data :error IS NULL
-    AND data :result :begin_block_events is null 
+    VALUE :data :error IS NULL
+    AND DATA :error IS NULL
+    AND DATA :result :begin_block_events IS NULL
 
 {% if is_incremental() %}
 AND _partition_by_block_id >= (
@@ -59,6 +59,9 @@ AND _partition_by_block_id >= (
 )
 {% endif %}
 
-qualify row_number() over (partition by chain_id, block_id 
-    order by _partition_by_block_id desc) = 1 
-    
+qualify ROW_NUMBER() over (
+    PARTITION BY chain_id,
+    block_id
+    ORDER BY
+        _partition_by_block_id DESC
+) = 1

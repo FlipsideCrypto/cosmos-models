@@ -5,7 +5,7 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - TX_ID
+            - _UNIQUE_KEY
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -28,10 +28,6 @@ models:
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
         tests: 
-          - not_null
-      - name: CHAIN_ID
-        description: "{{ doc('chain_id') }}"
-        tests:
           - not_null
       - name: CODESPACE
         description: "{{ doc('codespace') }}"
