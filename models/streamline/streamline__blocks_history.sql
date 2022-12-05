@@ -1,12 +1,12 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}'))",
+        func = "{{this.schema}}.udf_get_cosmos_blocks(object_construct('sql_source', '{{this.identifier}}'))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
 
-{% for item in range(12) %}
+{% for item in range(13) %}
     (
 
         SELECT
@@ -26,7 +26,7 @@
             id,
             block_number
         FROM
-            {{ ref("streamline__complete_transactions") }}
+            {{ ref("streamline__complete_blocks") }}
         WHERE
             block_number BETWEEN {{ item * 1000000 + 1 }}
             AND {{(
