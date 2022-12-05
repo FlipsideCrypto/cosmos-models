@@ -6,7 +6,7 @@
     )
 ) }}
 
-{% for item in range(1000, 1300) %}
+{% for item in range(13) %}
     (
 
         SELECT
@@ -17,10 +17,10 @@
         FROM
             {{ ref("streamline__blocks") }}
         WHERE
-            block_number BETWEEN {{ item * 10000 + 1 }}
+            block_number BETWEEN {{ item * 1000000 + 1 }}
             AND {{(
                 item + 1
-            ) * 10000 }}
+            ) * 1000000 }}
         EXCEPT
         SELECT
             id,
@@ -28,10 +28,10 @@
         FROM
             {{ ref("streamline__complete_transactions") }}
         WHERE
-            block_number BETWEEN {{ item * 10000 + 1 }}
+            block_number BETWEEN {{ item * 1000000 + 1 }}
             AND {{(
                 item + 1
-            ) * 10000 }}
+            ) * 1000000 }}
         ORDER BY
             block_number
     ) {% if not loop.last %}
