@@ -137,7 +137,7 @@ SELECT
   msg_sub_group,
   msg_index,
   msg_type,
-  msg,
+  msg :: OBJECT as msg,
   _unique_key,
   _partition_by_block_id
 FROM

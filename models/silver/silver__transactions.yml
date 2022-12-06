@@ -51,6 +51,9 @@ models:
         description: "{{ doc('tx_succeeded') }}"
         tests: 
           - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - BOOLEAN
       - name: TX_CODE
         description: "{{ doc('tx_code') }}"
         tests: 
@@ -67,7 +70,15 @@ models:
         description:  "{{ doc('tx_log') }}"
         tests: 
           - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
       - name: _PARTITION_BY_BLOCK_ID
         description: "{{ doc('partition_by_block_id') }}"
         tests:
           - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT 
