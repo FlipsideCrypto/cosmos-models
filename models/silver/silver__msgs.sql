@@ -5,14 +5,12 @@
   cluster_by = ['block_timestamp::DATE'],
 ) }}
 
-with base_msgs as (
-    
-    SELECT
+WITH base_msgs AS (
+
+  SELECT
     t.block_id,
     t.block_timestamp,
     t.tx_id,
-    t.blockchain,
-    t.chain_id,
     t.gas_used,
     t.gas_wanted,
     t.tx_succeeded,
@@ -47,7 +45,10 @@ with base_msgs as (
     ) AS attribute_value,
     t._partition_by_block_id
   FROM
-    {{ ref('silver__transactions' )}} t, 
+    {{ ref(
+      'silver__transactions'
+    ) }}
+    t,
     LATERAL FLATTEN(input => msgs) f
 
 {% if is_incremental() %}
@@ -59,9 +60,7 @@ WHERE
       {{ this }}
   )
 {% endif %}
-
 ),
-
 exec_actions AS (
   SELECT
     DISTINCT tx_id,
@@ -71,12 +70,8 @@ exec_actions AS (
   WHERE
     msg_type = 'message'
     AND attribute_key = 'action'
-    AND LOWER(attribute_value) LIKE '%exec%' 
-    
+    AND LOWER(attribute_value) LIKE '%exec%'
 ),
-
-
-
 GROUPING AS (
   SELECT
     base_msgs.tx_id,
@@ -95,15 +90,11 @@ GROUPING AS (
   WHERE
     base_msgs.is_module = 'TRUE'
     AND base_msgs.msg_type = 'message'
-)
-,
-
+),
 msgs AS (
   SELECT
     block_id,
     block_timestamp,
-    blockchain,
-    chain_id,
     A.tx_id,
     tx_succeeded,
     msg_group,
@@ -126,6 +117,7 @@ msgs AS (
     msg,
     concat_ws(
       '-',
+      block_id,
       A.tx_id,
       A.msg_index
     ) AS _unique_key,
@@ -136,13 +128,9 @@ msgs AS (
     ON A.tx_id = b.tx_id
     AND A.msg_index = b.msg_index
 )
-
-
 SELECT
   block_id,
   block_timestamp,
-  blockchain,
-  chain_id,
   tx_id,
   tx_succeeded,
   msg_group,
