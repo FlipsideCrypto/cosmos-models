@@ -14,7 +14,7 @@ SELECT
 FROM
     {{ ref("streamline__blocks") }}
 WHERE
-    block_number > 12000000
+    block_number > 13000000
     AND block_number IS NOT NULL
 EXCEPT
 SELECT
@@ -23,4 +23,4 @@ SELECT
 FROM
     {{ ref("streamline__complete_blocks") }}
 WHERE
-    block_number > 12000000
+    block_number > 13000000
