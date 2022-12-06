@@ -13,7 +13,7 @@ SELECT
         DATA :result :block :header :timestamp :: TIMESTAMP,
         DATA :block :header :timestamp :: TIMESTAMP
     ) AS block_timestamp,
-    'COSMOS' AS blockchain,
+    'cosmos' AS blockchain,
     COALESCE(
         DATA :result :block :header :chain_id :: STRING,
         DATA :block :header :chain_id :: STRING
