@@ -22,6 +22,7 @@ max_block_partition AS (
 
 fee AS (
   SELECT
+    block_id, 
     tx_id,
     attribute_value AS fee
   FROM
@@ -42,6 +43,7 @@ AND _partition_by_block_id >= (
 
 spender AS (
   SELECT
+    block_id, 
     tx_id,
     SPLIT_PART(
       attribute_value,
@@ -69,6 +71,7 @@ ORDER BY
 
 no_fee_tx_raw as (
  select  
+    block_id, 
     tx_id, 
     f.index,
     f.value: type ::string as event_type,
@@ -121,6 +124,7 @@ FROM
   t
   INNER JOIN no_fee_tx_raw f
   ON t.tx_id = f.tx_id
+  AND t.block_id = f.block_id
     
 
 ),
@@ -151,9 +155,10 @@ FROM
   t
   INNER JOIN fee f
   ON t.tx_id = f.tx_id
+  AND t.block_id = f.block_id
   INNER JOIN spender s
   ON t.tx_id = s.tx_id
-
+  AND t.block_id = s.block_id
 ), 
 
 final_transactions as (
