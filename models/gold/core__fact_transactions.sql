@@ -29,7 +29,6 @@ fee AS (
   WHERE
     attribute_key = 'fee'
     AND msg_type = 'tx'
-    AND fee like '%uatom'
     
     {% if is_incremental() %}
 AND _partition_by_block_id >= (
