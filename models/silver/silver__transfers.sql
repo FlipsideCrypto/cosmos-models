@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "_unique_key",
+    unique_key = "unique_key",
     incremental_strategy = 'delete+insert',
     cluster_by = 'block_timestamp::DATE',
 ) }}
@@ -193,7 +193,7 @@ cosmos_txs_final AS (
             r.tx_id,
             r.msg_index,
             currency
-        ) AS _unique_key
+        ) AS unique_key
     FROM
         receiver r
         LEFT OUTER JOIN amount C
@@ -239,7 +239,7 @@ ibc_in_tx AS (
             tx_id,
             msg_index,
             currency
-        ) AS _unique_key
+        ) AS unique_key
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
@@ -295,7 +295,7 @@ ibc_out_tx AS (
             tx_id,
             msg_index,
             currency
-        ) AS _unique_key
+        ) AS unique_key
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
@@ -341,7 +341,7 @@ ibc_tx_final AS (
         i.receiver,
         msg_index,
         _partition_by_block_id,
-        _unique_key
+        unique_key
     FROM
         ibc_transfers_agg i
 )
@@ -357,7 +357,7 @@ SELECT
     receiver,
     msg_index,
     _partition_by_block_id,
-    _unique_key
+    unique_key
 FROM
     ibc_tx_final
 UNION ALL
@@ -373,6 +373,6 @@ SELECT
     receiver,
     msg_index,
     _partition_by_block_id,
-    _unique_key
+    unique_key
 FROM
     cosmos_txs_final
