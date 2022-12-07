@@ -60,3 +60,7 @@ models:
         description: "The underlying json from the messages or events within the transactions"
         tests: 
           - dbt_expectations.expect_column_to_exist
+      - name: UNIQUE_KEY
+        description: "{{ doc('_unique_key') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist

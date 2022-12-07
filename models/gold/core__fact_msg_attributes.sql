@@ -17,6 +17,6 @@ SELECT
     attribute_index,
     attribute_key,
     attribute_value,
-    _unique_key
+    unique_key
 FROM
     {{ ref('silver__msg_attributes') }}

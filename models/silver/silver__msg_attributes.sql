@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "_unique_key",
+    unique_key = "unique_key",
     incremental_strategy = 'delete+insert',
     cluster_by = ['block_timestamp::DATE'],
 ) }}
@@ -27,7 +27,7 @@ SELECT
         tx_id,
         msg_index,
         attribute_index
-    ) AS _unique_key,
+    ) AS unique_key,
     _partition_by_block_id
 FROM
     {{ ref('silver__msgs') }} A,

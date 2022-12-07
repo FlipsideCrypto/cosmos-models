@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "_unique_key",
+    unique_key = "unique_key",
     incremental_strategy = 'delete+insert',
     cluster_by = 'block_timestamp::DATE',
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
@@ -52,7 +52,7 @@ SELECT
         '-',
         t.block_id,
         tx_id
-    ) AS _unique_key
+    ) AS unique_key
 FROM
     base_transactions t
     JOIN {{ ref('silver__blocks') }}

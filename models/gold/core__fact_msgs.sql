@@ -15,7 +15,7 @@ SELECT
     msg_index,
     msg_type,
     msg,
-    _unique_key
+    unique_key
 
 FROM
     {{ ref('silver__msgs') }}

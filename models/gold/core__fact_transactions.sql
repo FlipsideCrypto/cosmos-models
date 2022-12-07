@@ -1,6 +1,6 @@
 {{ config(
   materialized = 'incremental',
-  unique_key = "tx_id",
+  unique_key = "unique_key",
   incremental_strategy = 'delete+insert',
   cluster_by = ['block_timestamp::DATE'],
 ) }}
@@ -114,7 +114,8 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id
+  _partition_by_block_id, 
+  unique_key
 FROM
   {{ ref('silver__transactions') }} 
   t
@@ -143,7 +144,8 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id
+  _partition_by_block_id, 
+  unique_key
 FROM
   {{ ref('silver__transactions') }} 
   t
@@ -179,6 +181,7 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id
+  _partition_by_block_id, 
+  unique_key
 
 FROM final_transactions

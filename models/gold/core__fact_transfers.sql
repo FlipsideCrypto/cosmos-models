@@ -11,8 +11,7 @@ SELECT
     sender, 
     amount, 
     currency,
-    decimal,  
     receiver,
-    _unique_key
+    unique_key
 
 FROM {{ ref('silver__transfers') }}

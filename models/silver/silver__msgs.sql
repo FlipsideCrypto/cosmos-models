@@ -1,6 +1,6 @@
 {{ config(
   materialized = 'incremental',
-  unique_key = "_unique_key",
+  unique_key = "unique_key",
   incremental_strategy = 'delete+insert',
   cluster_by = ['block_timestamp::DATE'],
 ) }}
@@ -120,7 +120,7 @@ msgs AS (
       block_id,
       A.tx_id,
       A.msg_index
-    ) AS _unique_key,
+    ) AS unique_key,
     _partition_by_block_id
   FROM
     base_msgs A
@@ -138,7 +138,7 @@ SELECT
   msg_index,
   msg_type,
   msg :: OBJECT as msg,
-  _unique_key,
+  unique_key,
   _partition_by_block_id
 FROM
   msgs

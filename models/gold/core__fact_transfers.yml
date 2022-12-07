@@ -35,15 +35,11 @@ models:
         description: "{{ doc('currency') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: DECIMAL 
-        description: "{{ doc('decimal') }}"
-        tests: 
-          - dbt_expectations.expect_column_to_exist
       - name: RECEIVER
         description: "{{ doc('receiver') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: _UNIQUE_KEY
+      - name: UNIQUE_KEY
         description: "{{ doc('_unique_key') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
