@@ -17,4 +17,4 @@ FROM
         "tx_pagination_blocks"
     ) }}
 LIMIT
-    6000
+    4000
