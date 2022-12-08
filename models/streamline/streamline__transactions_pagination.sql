@@ -7,11 +7,12 @@
 ) }}
 
 SELECT
+    {{ dbt_utils.surrogate_key(
+        ['block_number']
+    ) }} AS id,
     block_number
 FROM
     {{ source(
         "bronze_streamline",
-        "tx_search"
+        "tx_pagination_blocks"
     ) }}
-WHERE
-    DATA :result :total_count :: INT > 100
