@@ -14,4 +14,6 @@ FROM
         "tx_search"
     ) }}
 WHERE
-    DATA:result:total_count :: INT > 100
+    DATA :result :total_count :: INT > 100
+LIMIT
+    5000
