@@ -15,5 +15,3 @@ FROM
     ) }}
 WHERE
     DATA :result :total_count :: INT > 100
-LIMIT
-    5000
