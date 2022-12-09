@@ -16,5 +16,4 @@ FROM
         "bronze_streamline",
         "tx_pagination_blocks"
     ) }}
-LIMIT
-    4000
+    
