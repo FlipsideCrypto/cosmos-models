@@ -79,7 +79,8 @@ no_fee_tx_raw as (
     try_base64_decode_string( f.value:attributes[1]:value) as sender ,
     try_base64_decode_string( f.value:attributes[2]:value) as amount_raw ,
     CASE 
-      WHEN amount_raw like '%uatom' then amount_raw 
+      WHEN amount_raw like '%uatom' AND amount_raw not like '%ibc%' 
+        THEN amount_raw 
       ELSE '0uatom' 
     END as amount 
 
