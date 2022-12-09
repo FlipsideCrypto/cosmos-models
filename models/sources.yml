@@ -9,4 +9,3 @@ sources:
       - name: blocks
       - name: tx_search
       - name: validators
-      - name: tx_pagination_blocks
