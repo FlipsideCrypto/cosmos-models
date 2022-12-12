@@ -1,0 +1,69 @@
+version: 2
+models:
+  - name: core__fact_validators
+    description: A table that contains labels for and additional information about Cosmos Hub validators
+    columns:
+      - name: ADDRESS
+        description: "{{ doc('address') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCKCHAIN
+        description: "{{ doc('blockchain') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: CREATOR
+        description: "{{ doc('creator') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL_TYPE
+        description: "{{ doc('label_type') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL_SUBTYPE
+        description: "{{ doc('label_subtype') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: LABEL 
+        description: "{{ doc('label') }}" 
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: PROJECT_NAME
+        description: "{{ doc('project_name') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: ACCOUNT_ADDRESS
+        description: The Cosmos address of the user / entity that operates the validator. 
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: DELEGATOR_SHARES
+        description: The number of tokens staked to the validator. 
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: SELF_DELEGATION
+        description: The number of ATOM tokens that the operator currently has staked with their own validator.
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: NUM_DELEGATORS
+        description: The number of wallets that stake their ATOM tokens with the validator.
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RATE
+        description: The commission rate that the validator is currently charging.
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RANK
+        description: The rank of the validator in the validator set. Rank is determined by the number of ATOM tokens staked to the validator
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: NUM_GOVERNANCE_VOTES
+        description: The number of governance proposals the validator has voted on during its lifetime. 
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RAW_METADATA
+        description: "{{ doc('raw_metadata') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: _UNIQUE_KEY
+        description: The unique key of the table
+        tests: 
+          - dbt_expectations.expect_column_to_exist

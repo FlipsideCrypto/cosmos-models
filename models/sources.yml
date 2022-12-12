@@ -10,3 +10,8 @@ sources:
       - name: tx_search
       - name: validators
       - name: tx_pagination_blocks
+  - name: osmo
+    database: osmosis
+    schema: silver
+    tables: 
+      - name: asset_metadata
