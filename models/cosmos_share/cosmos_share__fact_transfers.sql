@@ -1,5 +1,8 @@
 {{ config(
-    materialized = 'view'
+    materialized = 'incremental',
+    unique_key = "unique_key",
+    cluster_by = ['block_timestamp::date'],
+    tags = ['share']
 ) }}
 
 SELECT
@@ -14,4 +17,4 @@ SELECT
     receiver,
     unique_key
 FROM
-    {{ ref('silver__transfers') }}
+    {{ ref('core__fact_transfers') }}

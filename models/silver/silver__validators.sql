@@ -27,6 +27,6 @@ SELECT
         address,
         creator,
         blockchain
-    ) AS _unique_key
+    ) AS unique_key
 FROM
     {{ ref('bronze_api__get_validator_metadata') }}

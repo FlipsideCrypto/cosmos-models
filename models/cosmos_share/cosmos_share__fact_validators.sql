@@ -1,5 +1,7 @@
 {{ config(
-    materialized = 'view'
+    materialized = 'incremental',
+    unique_key = "unique_key",
+    tags = ['share']
 ) }}
 
 SELECT
@@ -20,4 +22,4 @@ SELECT
     raw_metadata,
     unique_key
 FROM
-    {{ ref('silver__validators') }}
+    {{ ref('core__fact_validators') }}
