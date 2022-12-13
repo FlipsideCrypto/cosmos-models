@@ -1,0 +1,138 @@
+version: 2
+models:
+  - name: silver__validators
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - UNIQUE_KEY
+    columns:
+      - name: ADDRESS
+        description: "{{ doc('address') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: BLOCKCHAIN
+        description: "{{ doc('blockchain') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              value_set: ['cosmos']
+      - name: CREATOR
+        description: "{{ doc('creator') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: LABEL_TYPE
+        description: "{{ doc('label_type') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              value_set: ['operator']
+      - name: LABEL_SUBTYPE
+        description: "{{ doc('label_subtype') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              value_set: ['validator']
+      - name: LABEL 
+        description: "{{ doc('label') }}" 
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: PROJECT_NAME
+        description: "{{ doc('project_name') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: ACCOUNT_ADDRESS
+        description: The Cosmos address of the user / entity that operates the validator. 
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: DELEGATOR_SHARES
+        description: The number of tokens staked to the validator. 
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: SELF_DELEGATION
+        description: The number of ATOM tokens that the operator currently has staked with their own validator.
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: NUM_DELEGATORS
+        description: The number of wallets that stake their ATOM tokens with the validator.
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: RATE
+        description: The commission rate that the validator is currently charging.
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: RANK
+        description: The rank of the validator in the validator set. Rank is determined by the number of ATOM tokens staked to the validator
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: NUM_GOVERNANCE_VOTES
+        description: The number of governance proposals the validator has voted on during its lifetime. 
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: RAW_METADATA
+        description: "{{ doc('raw_metadata') }}"
+        tests: 
+          - not_null
+      - name: UNIQUE_KEY
+        description: The unique key of the table
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
