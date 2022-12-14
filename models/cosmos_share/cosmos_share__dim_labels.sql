@@ -5,7 +5,7 @@
 ) }}
 
 SELECT
-    blockchain,
+    'cosmos' AS blockchain,
     creator,
     address,
     label_type,
