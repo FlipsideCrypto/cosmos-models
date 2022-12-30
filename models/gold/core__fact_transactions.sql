@@ -13,8 +13,8 @@ max_block_partition AS (
 
   SELECT
     MAX(
-      _partition_by_block_id
-    ) AS _partition_by_block_id_max
+      _inserted_timestamp
+    ) AS _inserted_timestamp
   FROM
     {{ ref('silver__transactions') }}
 ),
@@ -31,12 +31,12 @@ fee AS (
     attribute_key = 'fee'
     AND msg_type = 'tx'
     
-    {% if is_incremental() %}
-AND _partition_by_block_id >= (
-  SELECT
-    _partition_by_block_id_max 
-  FROM
-    max_block_partition
+{% if is_incremental() %}
+AND _inserted_timestamp :: DATE >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE - 2
+    FROM
+        {{ this }}
 )
 {% endif %}
 ),
@@ -56,11 +56,11 @@ spender AS (
     attribute_key = 'acc_seq'
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
-  SELECT
-    _partition_by_block_id_max
-  FROM
-    max_block_partition
+AND _inserted_timestamp :: DATE >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE - 2
+    FROM
+        {{ this }}
 )
 {% endif %}
 
@@ -118,7 +118,7 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id, 
+  _inserted_timestamp, 
   unique_key
 FROM
   {{ ref('silver__transactions') }} 
@@ -149,7 +149,7 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id, 
+  _inserted_timestamp, 
   unique_key
 FROM
   {{ ref('silver__transactions') }} 
@@ -187,7 +187,7 @@ SELECT
   tx_code,
   tx_log,
   msgs,
-  _partition_by_block_id, 
+  _inserted_timestamp, 
   unique_key
 
 FROM final_transactions

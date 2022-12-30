@@ -80,11 +80,10 @@ models:
               column_type_list:
                 - STRING
                 - VARCHAR
-      - name: _PARTITION_BY_BLOCK_ID
-        description: "{{ doc('partition_by_block_id') }}"
+      - name: _INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
-                - NUMBER
-                - FLOAT
+                - TIMESTAMP_NTZ

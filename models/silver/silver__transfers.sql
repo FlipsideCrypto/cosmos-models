@@ -18,32 +18,34 @@ WITH cosmos_txs AS (
         )
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id)
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
 {% endif %}
 ),
 sender_index AS (
-    SELECT 
-        tx_id, 
-        min(msg_index) AS msg_index
-    FROM {{ ref('silver__msg_attributes')}}
-    WHERE 
+    SELECT
+        tx_id,
+        MIN(msg_index) AS msg_index
+    FROM
+        {{ ref('silver__msg_attributes') }}
+    WHERE
         msg_type = 'tx'
         AND attribute_key = 'acc_seq'
 
-    {% if is_incremental() %}
-AND _partition_by_block_id >= (
+{% if is_incremental() %}
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id)
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
 {% endif %}
-    GROUP BY tx_id
+GROUP BY
+    tx_id
 ),
 sender AS (
     SELECT
@@ -56,18 +58,19 @@ sender AS (
             0
         ) AS sender
     FROM
-        {{ ref('silver__msg_attributes') }} m
-    INNER JOIN sender_index s
-    ON m.tx_id = s.tx_id 
-    AND m.msg_index = s.msg_index
+        {{ ref('silver__msg_attributes') }}
+        m
+        INNER JOIN sender_index s
+        ON m.tx_id = s.tx_id
+        AND m.msg_index = s.msg_index
     WHERE
         msg_type = 'tx'
         AND attribute_key = 'acc_seq'
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id)
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -93,9 +96,9 @@ msg_index AS (
         AND m.msg_index > s.msg_index
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id)
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -121,9 +124,9 @@ receiver AS (
         AND m.msg_index > s.msg_index
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -166,9 +169,9 @@ amount AS (
         AND m.msg_index > s.msg_index
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -186,7 +189,7 @@ cosmos_txs_final AS (
         amount,
         currency,
         receiver,
-        _partition_by_block_id,
+        _inserted_timestamp,
         concat_ws(
             '-',
             r.block_id,
@@ -209,9 +212,9 @@ cosmos_txs_final AS (
         AND r.block_id = t.block_id
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -232,7 +235,7 @@ ibc_in_tx AS (
             ELSE TRY_PARSE_JSON(attribute_value) :denom :: STRING
         END AS currency,
         TRY_PARSE_JSON(attribute_value) :receiver :: STRING AS receiver,
-        _partition_by_block_id,
+        _inserted_timestamp,
         concat_ws(
             '-',
             block_id,
@@ -248,9 +251,9 @@ ibc_in_tx AS (
         AND TRY_PARSE_JSON(attribute_value): amount IS NOT NULL
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -265,9 +268,9 @@ ibc_out_txid AS (
         msg_type = 'ibc_transfer'
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -288,7 +291,7 @@ ibc_out_tx AS (
             ELSE TRY_PARSE_JSON(attribute_value) :denom :: STRING
         END AS currency,
         TRY_PARSE_JSON(attribute_value) :receiver :: STRING AS receiver,
-        _partition_by_block_id,
+        _inserted_timestamp,
         concat_ws(
             '-',
             block_id,
@@ -309,9 +312,9 @@ ibc_out_tx AS (
         AND attribute_key = 'packet_data'
 
 {% if is_incremental() %}
-AND _partition_by_block_id >= (
+AND _inserted_timestamp :: DATE >= (
     SELECT
-        MAX(_partition_by_block_id) 
+        MAX(_inserted_timestamp) :: DATE - 2
     FROM
         {{ this }}
 )
@@ -340,7 +343,7 @@ ibc_tx_final AS (
         i.currency,
         i.receiver,
         msg_index,
-        _partition_by_block_id,
+        _inserted_timestamp,
         unique_key
     FROM
         ibc_transfers_agg i
@@ -356,7 +359,7 @@ SELECT
     currency,
     receiver,
     msg_index,
-    _partition_by_block_id,
+    _inserted_timestamp,
     unique_key
 FROM
     ibc_tx_final
@@ -372,7 +375,7 @@ SELECT
     currency,
     receiver,
     msg_index,
-    _partition_by_block_id,
+    _inserted_timestamp,
     unique_key
 FROM
     cosmos_txs_final
