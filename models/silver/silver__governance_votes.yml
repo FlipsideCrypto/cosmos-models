@@ -1,0 +1,61 @@
+version: 2
+models:
+  - name: silver__governance_votes
+    description: Records of all votes on proposals. 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - PROPOSAL_ID
+            - VOTER
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT  
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      - name: BLOCKCHAIN
+        description: "{{ doc('blockchain') }}"
+        tests: 
+          - not_null
+      - name: CHAIN_ID
+        description: "{{ doc('chain_id') }}"
+        tests:
+          - not_null
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - not_null
+      - name: TX_STATUS
+        description: "{{ doc('tx_status') }}"
+        tests: 
+          - not_null
+      - name: VOTER
+        description: "{{ doc('voter') }}"
+        tests: 
+          - not_null
+      - name: PROPOSAL_ID
+        description: "{{ doc('proposal_id') }}"
+        tests: 
+          - not_null
+      - name: VOTE_OPTION
+        description: "{{ doc('vote_option') }}"
+        tests: 
+          - not_null
+      - name: _INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
