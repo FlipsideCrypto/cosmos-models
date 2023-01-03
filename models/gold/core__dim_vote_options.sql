@@ -3,7 +3,7 @@
 ) }}
 
 SELECT 
-    DISTINCT vote_option AS vote_id, 
+    DISTINCT vote_option AS vote_option, 
     CASE 
         WHEN vote_option = 1 THEN 
             'YES'

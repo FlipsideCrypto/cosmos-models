@@ -105,7 +105,7 @@ SELECT
     tx_succeeded,
     d.depositor,
     p.proposal_id :: NUMBER as proposal_id,
-    v.amount,
+    v.amount :: NUMBER as amount,
     v.currency,
     _inserted_timestamp
 FROM

@@ -5,10 +5,21 @@
     cluster_by = ['block_timestamp::DATE'],
 ) }}
 
-WITH vote_options AS (
+WITH max_index AS (
 
     SELECT
         tx_id,
+        MAX(msg_index) AS max_idx
+    FROM
+        {{ ref('silver__msg_attributes') }}
+    WHERE
+        msg_type = 'proposal_vote'
+        AND attribute_key = 'option'
+    GROUP BY tx_id
+),
+vote_options AS (
+    SELECT
+        m.tx_id,
         msg_index,
         CASE
             WHEN attribute_value :: STRING = 'VOTE_OPTION_YES' THEN 1
@@ -20,9 +31,14 @@ WITH vote_options AS (
         TRY_PARSE_JSON(attribute_value) :weight :: FLOAT AS vote_weight
     FROM
         {{ ref('silver__msg_attributes') }}
+        m
+        INNER JOIN max_index x
+        ON m.tx_id = x.tx_id
     WHERE
         msg_type = 'proposal_vote'
         AND attribute_key = 'option'
+        AND msg_index = x.max_idx
+        AND vote_option IS NOT NULL
 
 {% if is_incremental() %}
 AND _inserted_timestamp :: DATE >= CURRENT_DATE - 2
@@ -61,10 +77,10 @@ SELECT
     block_id,
     block_timestamp,
     o.tx_id,
-    tx_status,
+    tx_succeeded,
     v.voter,
-    p.proposal_id,
-    vote_option,
+    p.proposal_id :: NUMBER AS proposal_id,
+    vote_option :: NUMBER AS vote_option,
     vote_weight,
     _inserted_timestamp
 FROM
