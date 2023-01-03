@@ -34,10 +34,10 @@ vote_options AS (
         m
         INNER JOIN max_index x
         ON m.tx_id = x.tx_id
+        AND m.msg_index = x.max_idx
     WHERE
         msg_type = 'proposal_vote'
         AND attribute_key = 'option'
-        AND msg_index = x.max_idx
         AND vote_option IS NOT NULL
 
 {% if is_incremental() %}
@@ -47,8 +47,12 @@ AND _inserted_timestamp :: DATE >= CURRENT_DATE - 2
 proposal_id AS (
     SELECT
         tx_id,
+        block_id, 
+        block_timestamp, 
+        tx_succeeded,
         msg_index,
-        attribute_value AS proposal_id
+        attribute_value AS proposal_id, 
+        _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
@@ -91,11 +95,3 @@ FROM
     LEFT OUTER JOIN voter v
     ON o.tx_id = v.tx_id
     AND o.msg_index = v.msg_index - 1
-    LEFT OUTER JOIN {{ ref('silver__transactions') }}
-    t
-    ON o.tx_id = t.tx_id
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp :: DATE >= CURRENT_DATE - 2
-{% endif %}

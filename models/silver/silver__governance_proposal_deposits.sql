@@ -22,7 +22,11 @@ max_date AS (
 proposal_ids AS (
     SELECT
         tx_id,
-        attribute_value AS proposal_id
+        block_id, 
+        block_timestamp, 
+        tx_succeeded,
+        attribute_value AS proposal_id, 
+        _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }}
     WHERE
@@ -114,18 +118,3 @@ FROM
     ON p.tx_id = v.tx_id
     INNER JOIN depositors d
     ON v.tx_id = d.tx_id
-    LEFT OUTER JOIN {{ ref('silver__transactions') }}
-    t
-    ON v.tx_id = t.tx_id
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
-    )
-{% endif %}
