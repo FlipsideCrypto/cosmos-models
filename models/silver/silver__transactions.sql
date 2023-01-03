@@ -21,16 +21,16 @@ WITH base_transactions AS (
         t.value :tx_result :code :: NUMBER AS tx_code,
         t.value :tx_result :events AS msgs,
         t.value :tx_result :log :: STRING AS tx_log,
-        _partition_by_block_id
+        _inserted_timestamp
     FROM
         {{ ref('bronze__tx_search') }},
         TABLE(FLATTEN(DATA :result :txs)) t
 
 {% if is_incremental() %}
 WHERE
-    _partition_by_block_id >= (
+    _inserted_timestamp :: DATE >= (
         SELECT
-            MAX(_partition_by_block_id)
+            MAX(_inserted_timestamp) :: DATE - 2
         FROM
             {{ this }}
     )
@@ -47,7 +47,7 @@ SELECT
     tx_code,
     msgs,
     tx_log,
-    t._partition_by_block_id,
+    t._inserted_timestamp,
     concat_ws(
         '-',
         t.block_id,
@@ -61,9 +61,9 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    b._partition_by_block_id >= (
+    b._inserted_timestamp :: DATE >= (
         SELECT
-            MAX(_partition_by_block_id)
+            MAX(_inserted_timestamp) :: DATE - 2
         FROM
             {{ this }}
     )
@@ -73,5 +73,5 @@ qualify ROW_NUMBER() over (
     PARTITION BY t.block_id,
     tx_id
     ORDER BY
-        t._partition_by_block_id DESC
+        t._inserted_timestamp DESC
 ) = 1
