@@ -19,7 +19,6 @@ SELECT
     tx_code,
     tx_log,
     msgs,
-    _partition_by_block_id,
     unique_key
 FROM
     {{ ref('core__fact_transactions') }}
