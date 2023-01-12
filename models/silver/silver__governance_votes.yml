@@ -8,6 +8,7 @@ models:
             - TX_ID
             - PROPOSAL_ID
             - VOTER
+            - VOTE_OPTION
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
