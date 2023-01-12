@@ -1,97 +1,158 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "CONCAT_WS('-', tx_id, proposal_id, voter)",
-    incremental_strategy = 'delete+insert',
-    cluster_by = ['block_timestamp::DATE'],
+    unique_key = ['tx_id','proposal_id','voter','vote_option'],
+    incremental_strategy = 'merge',
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
-WITH max_index AS (
+WITH base_atts AS (
 
     SELECT
-        tx_id,
-        MAX(msg_index) AS max_idx
-    FROM
-        {{ ref('silver__msg_attributes') }}
-    WHERE
-        msg_type = 'proposal_vote'
-        AND attribute_key = 'option'
-    GROUP BY tx_id
-),
-vote_options AS (
-    SELECT
-        m.tx_id,
-        msg_index,
-        CASE
-            WHEN attribute_value :: STRING = 'VOTE_OPTION_YES' THEN 1
-            WHEN attribute_value :: STRING = 'VOTE_OPTION_ABSTAIN' THEN 2
-            WHEN attribute_value :: STRING = 'VOTE_OPTION_NO' THEN 3
-            WHEN attribute_value :: STRING = 'VOTE_OPTION_NO_WITH_VETO' THEN 4
-            ELSE TRY_PARSE_JSON(attribute_value) :option
-        END AS vote_option,
-        TRY_PARSE_JSON(attribute_value) :weight :: FLOAT AS vote_weight
-    FROM
-        {{ ref('silver__msg_attributes') }}
-        m
-        INNER JOIN max_index x
-        ON m.tx_id = x.tx_id
-        AND m.msg_index = x.max_idx
-    WHERE
-        msg_type = 'proposal_vote'
-        AND attribute_key = 'option'
-        AND vote_option IS NOT NULL
-
-{% if is_incremental() %}
-AND _inserted_timestamp :: DATE >= CURRENT_DATE - 2
-{% endif %}
-),
-proposal_id AS (
-    SELECT
-        tx_id,
-        block_id, 
-        block_timestamp, 
+        block_id,
+        block_timestamp,
         tx_succeeded,
+        tx_id,
+        msg_group,
+        msg_sub_group,
+        COALESCE(
+            TRY_CAST(
+                SPLIT_PART(REPLACE(REPLACE(b.path, '['), ']'), '.', 1) AS INT
+            ),
+            0
+        ) AS msg_sub_sub_group,
         msg_index,
-        attribute_value AS proposal_id, 
+        COALESCE(
+            b.key,
+            attribute_key
+        ) AS attribute_key,
+        COALESCE(
+            b.value,
+            attribute_value
+        ) AS attribute_value,
+        msg_type,
         _inserted_timestamp
     FROM
-        {{ ref('silver__msg_attributes') }}
+        {{ ref('silver__msg_attributes') }},
+        LATERAL FLATTEN(
+            TRY_PARSE_JSON(
+                CASE
+                    WHEN attribute_key = 'option'
+                    AND attribute_value LIKE '%option%option%' THEN '[' || REGEXP_REPLACE(
+                        attribute_value,
+                        '\}\n',
+                        '\},'
+                    ) || ']'
+                    ELSE attribute_value
+                END
+            ),
+            outer => TRUE
+        ) b
     WHERE
-        msg_type = 'proposal_vote'
-        AND attribute_key = 'proposal_id'
+        (
+            msg_type = 'proposal_vote'
+            OR (
+                msg_type = 'message'
+                AND attribute_key = 'sender'
+            )
+        )
+        AND COALESCE(
+            b.value,
+            ''
+        ) NOT LIKE '%option%weight%'
 
 {% if is_incremental() %}
-AND _inserted_timestamp :: DATE >= CURRENT_DATE - 2
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        ) _inserted_timestamp
+    FROM
+        {{ this }}
+)
 {% endif %}
 ),
-voter AS (
+fin AS (
     SELECT
+        block_id,
+        block_timestamp,
+        tx_succeeded,
         tx_id,
-        msg_index,
-        attribute_value AS voter
+        msg_group,
+        msg_sub_group,
+        msg_sub_sub_group,
+        _inserted_timestamp,
+        OBJECT_AGG(
+            attribute_key :: STRING,
+            attribute_value :: variant
+        ) AS j,
+        {# j :proposal_id :: INT AS proposal_id, #}
+        j :option :: STRING AS vote_option,
+        j :weight :: FLOAT AS vote_weight
     FROM
-        {{ ref('silver__msg_attributes') }}
+        base_atts
     WHERE
-        attribute_key = 'sender'
-
-{% if is_incremental() %}
-AND _inserted_timestamp :: DATE >= CURRENT_DATE - 2
-{% endif %}
+        msg_type = 'proposal_vote'
+        AND attribute_key IN (
+            'option',
+            'weight'
+        )
+    GROUP BY
+        block_id,
+        block_timestamp,
+        tx_succeeded,
+        tx_id,
+        msg_group,
+        msg_sub_group,
+        msg_sub_sub_group,
+        _inserted_timestamp
 )
 SELECT
-    block_id,
-    block_timestamp,
-    o.tx_id,
-    tx_succeeded,
-    v.voter,
-    p.proposal_id :: NUMBER AS proposal_id,
-    vote_option :: NUMBER AS vote_option,
-    vote_weight,
-    _inserted_timestamp
+    A.block_id,
+    A.block_timestamp,
+    A.tx_id,
+    A.tx_succeeded,
+    b.voter,
+    C.proposal_id,
+    CASE
+        WHEN A.vote_option = 'VOTE_OPTION_YES' THEN 1
+        WHEN A.vote_option = 'VOTE_OPTION_ABSTAIN' THEN 2
+        WHEN A.vote_option = 'VOTE_OPTION_NO' THEN 3
+        WHEN A.vote_option = 'VOTE_OPTION_NO_WITH_VETO' THEN 4
+        ELSE A.vote_option :: INT
+    END AS vote_option,
+    A.vote_weight,
+    A._inserted_timestamp
 FROM
-    vote_options o
-    LEFT OUTER JOIN proposal_id p
-    ON o.tx_id = p.tx_id
-    AND o.msg_index = p.msg_index
-    LEFT OUTER JOIN voter v
-    ON o.tx_id = v.tx_id
-    AND o.msg_index = v.msg_index - 1
+    fin A
+    JOIN (
+        SELECT
+            tx_id,
+            msg_group,
+            msg_sub_group,
+            attribute_value AS voter
+        FROM
+            base_atts
+        WHERE
+            msg_type = 'message'
+            AND attribute_key = 'sender'
+    ) b
+    ON A.tx_id = b.tx_id
+    AND A.msg_group = b.msg_group
+    AND A.msg_sub_group = b.msg_sub_group
+    JOIN (
+        SELECT
+            tx_id,
+            msg_group,
+            msg_sub_group,
+            attribute_value :: INT AS proposal_id
+        FROM
+            base_atts
+        WHERE
+            msg_type = 'proposal_vote'
+            AND attribute_key = 'proposal_id'
+    ) C
+    ON A.tx_id = C.tx_id
+    AND A.msg_group = C.msg_group
+    AND A.msg_sub_group = C.msg_sub_group qualify(ROW_NUMBER() over (PARTITION BY A.tx_id, b.voter, C.proposal_id, vote_option
+ORDER BY
+    A.msg_group DESC) = 1)
