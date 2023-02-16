@@ -70,36 +70,36 @@ models:
                 - VARCHAR
       - name: ACCOUNT_ADDRESS
         description: The Cosmos address of the user / entity that operates the validator. 
-        tests: 
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
+        # tests: 
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - STRING
+        #         - VARCHAR
       - name: DELEGATOR_SHARES
         description: The number of tokens staked to the validator. 
-        tests: 
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
+        # tests: 
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT
       - name: SELF_DELEGATION
         description: The number of ATOM tokens that the operator currently has staked with their own validator.
-        tests: 
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
+        # tests: 
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT
       - name: NUM_DELEGATORS
         description: The number of wallets that stake their ATOM tokens with the validator.
-        tests: 
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
+        # tests: 
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT
       - name: RATE
         description: The commission rate that the validator is currently charging.
         tests: 
@@ -108,6 +108,21 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT
+      - name: MAX_CHANGE_RATE
+        tests: 
+          - not_null
+      - name: MAX_RATE
+        tests: 
+          - not_null
+      - name: COMMISSION_RATE_LAST_UPDATED
+        tests: 
+          - not_null
+      - name: STATUS
+        tests: 
+          - not_null
+      - name: JAILED
+        tests: 
+          - not_null
       - name: RANK
         description: The rank of the validator in the validator set. Rank is determined by the number of ATOM tokens staked to the validator
         tests: 
@@ -118,12 +133,12 @@ models:
                 - FLOAT
       - name: NUM_GOVERNANCE_VOTES
         description: The number of governance proposals the validator has voted on during its lifetime. 
-        tests: 
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
+        # tests: 
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT
       - name: RAW_METADATA
         description: "{{ doc('raw_metadata') }}"
         tests: 

@@ -3,30 +3,36 @@
 ) }}
 
 SELECT
-    address,
+    A.address,
     'cosmos' AS blockchain,
     'flipside' AS creator,
     'operator' AS label_type,
     'validator' AS label_subtype,
-    DATA :title :: STRING AS label,
-    DATA :cons_address :: STRING AS project_name,
-    DATA :acc_address :: STRING AS account_address,
-    DATA :power :: NUMBER AS delegator_shares,
-    DATA :self_stake :: NUMBER AS self_delegation,
-    DATA :delegators :: NUMBER AS num_delegators,
-    DATA :fee :: NUMBER AS rate,
+    A.data :description :moniker :: STRING AS label,
+    A.data :description :identity :: STRING AS project_name,
+    b.data :acc_address :: STRING AS account_address,
+    A.data :delegator_shares :: NUMBER AS delegator_shares,
+    b.data :self_stake :: NUMBER AS self_delegation,
+    b.data :delegators :: NUMBER num_delegators,
+    A.data :commission :commission_rates :rate :: NUMBER AS rate,
+    A.data :commission :commission_rates :max_change_rate :: NUMBER AS max_change_rate,
+    A.data :commission :commission_rates :max_rate :: NUMBER AS max_rate,
+    A.data :commission :update_time :: datetime AS commission_rate_last_updated,
+    A.data :status :: STRING AS status,
+    A.data :jailed :: BOOLEAN AS jailed,
     RANK() over (
-        PARTITION BY address
         ORDER BY
-            DATA :self_stake DESC
+            A.data :delegator_shares :: NUMBER DESC
     ) AS RANK,
-    DATA :governance_votes :: NUMBER AS num_governance_votes,
-    DATA AS raw_metadata,
+    b.data :governance_votes :: NUMBER AS num_governance_votes,
+    A.data AS raw_metadata,
     concat_ws(
         '-',
-        address,
+        A.address,
         creator,
         blockchain
     ) AS unique_key
 FROM
-    {{ ref('bronze_api__get_validator_metadata') }}
+    {{ ref('bronze_api__get_validator_metadata_lcd') }} A
+    LEFT JOIN bronze_api.get_validator_metadata b
+    ON A.address = b.address
