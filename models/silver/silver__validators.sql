@@ -8,19 +8,23 @@ SELECT
     'flipside' AS creator,
     'operator' AS label_type,
     'validator' AS label_subtype,
-    DATA :title :: STRING AS label,
-    DATA :cons_address :: STRING AS project_name,
-    DATA :acc_address :: STRING AS account_address,
-    DATA :power :: NUMBER AS delegator_shares,
-    DATA :self_stake :: NUMBER AS self_delegation,
-    DATA :delegators :: NUMBER AS num_delegators,
-    DATA :fee :: NUMBER AS rate,
+    DATA :description :moniker :: STRING AS label,
+    DATA :description :identity :: STRING AS project_name,
+    NULL AS account_address,
+    DATA :delegator_shares :: NUMBER AS delegator_shares,
+    NULL AS self_delegation,
+    NULL num_delegators,
+    DATA :commission :commission_rates :rate :: NUMBER AS rate,
+    DATA :commission :commission_rates :max_change_rate :: NUMBER AS max_change_rate,
+    DATA :commission :commission_rates :max_rate :: NUMBER AS max_rate,
+    DATA :commission :update_time :: datetime AS commission_rate_last_updated,
+    DATA :status :: STRING AS status,
+    DATA :jailed :: BOOLEAN AS jailed,
     RANK() over (
-        PARTITION BY address
         ORDER BY
-            DATA :self_stake DESC
+            DATA :delegator_shares :: NUMBER DESC
     ) AS RANK,
-    DATA :governance_votes :: NUMBER AS num_governance_votes,
+    NULL AS num_governance_votes,
     DATA AS raw_metadata,
     concat_ws(
         '-',
