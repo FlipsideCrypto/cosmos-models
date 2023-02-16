@@ -1,6 +1,5 @@
 {{ config(
-    materialized = 'table',
-    post_hook = "call silver.sp_bulk_get_asset_metadata()"
+    materialized = 'table'
 ) }}
 
 WITH call AS (
@@ -8,7 +7,7 @@ WITH call AS (
     SELECT
         ethereum.streamline.udf_api(
             'GET',
-            'https://api.cosmoscan.net/validators',{},{}
+            'https://cosmos.lcd.atomscan.com/cosmos/staking/v1beta1/validators?page.offset=1&pagination.limit=5000',{},{}
         ) AS resp,
         SYSDATE() AS _inserted_timestamp
 ),
@@ -21,10 +20,8 @@ keep_last_if_failed AS (
     FROM
         call,
         LATERAL FLATTEN(
-            input => resp :data
+            input => resp :data :validators
         ) i
-    WHERE
-        address IS NOT NULL
     UNION ALL
     SELECT
         address,
@@ -32,7 +29,7 @@ keep_last_if_failed AS (
         _inserted_timestamp,
         1 AS RANK
     FROM
-        bronze_api.get_validator_metadata
+        bronze_api.get_validator_metadata_lcd
 )
 SELECT
     address,

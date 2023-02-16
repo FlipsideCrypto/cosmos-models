@@ -3,34 +3,36 @@
 ) }}
 
 SELECT
-    address,
+    A.address,
     'cosmos' AS blockchain,
     'flipside' AS creator,
     'operator' AS label_type,
     'validator' AS label_subtype,
-    DATA :description :moniker :: STRING AS label,
-    DATA :description :identity :: STRING AS project_name,
-    NULL AS account_address,
-    DATA :delegator_shares :: NUMBER AS delegator_shares,
-    NULL AS self_delegation,
-    NULL num_delegators,
-    DATA :commission :commission_rates :rate :: NUMBER AS rate,
-    DATA :commission :commission_rates :max_change_rate :: NUMBER AS max_change_rate,
-    DATA :commission :commission_rates :max_rate :: NUMBER AS max_rate,
-    DATA :commission :update_time :: datetime AS commission_rate_last_updated,
-    DATA :status :: STRING AS status,
-    DATA :jailed :: BOOLEAN AS jailed,
+    A.data :description :moniker :: STRING AS label,
+    A.data :description :identity :: STRING AS project_name,
+    b.data :acc_address :: STRING AS account_address,
+    A.data :delegator_shares :: NUMBER AS delegator_shares,
+    b.data :self_stake :: NUMBER AS self_delegation,
+    b.data :delegators :: NUMBER num_delegators,
+    A.data :commission :commission_rates :rate :: NUMBER AS rate,
+    A.data :commission :commission_rates :max_change_rate :: NUMBER AS max_change_rate,
+    A.data :commission :commission_rates :max_rate :: NUMBER AS max_rate,
+    A.data :commission :update_time :: datetime AS commission_rate_last_updated,
+    A.data :status :: STRING AS status,
+    A.data :jailed :: BOOLEAN AS jailed,
     RANK() over (
         ORDER BY
-            DATA :delegator_shares :: NUMBER DESC
+            A.data :delegator_shares :: NUMBER DESC
     ) AS RANK,
-    NULL AS num_governance_votes,
-    DATA AS raw_metadata,
+    b.data :governance_votes :: NUMBER AS num_governance_votes,
+    A.data AS raw_metadata,
     concat_ws(
         '-',
-        address,
+        A.address,
         creator,
         blockchain
     ) AS unique_key
 FROM
-    {{ ref('bronze_api__get_validator_metadata') }}
+    {{ ref('bronze_api__get_validator_metadata_lcd') }} A
+    LEFT JOIN bronze_api.get_validator_metadata b
+    ON A.address = b.address
