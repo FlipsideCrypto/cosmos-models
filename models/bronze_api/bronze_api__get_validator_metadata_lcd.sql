@@ -7,7 +7,7 @@ WITH call AS (
     SELECT
         ethereum.streamline.udf_api(
             'GET',
-            'https://cosmos.lcd.atomscan.com/cosmos/staking/v1beta1/validators?page.offset=1&pagination.limit=5000',{},{}
+            'https://lcd-cosmoshub.keplr.app/cosmos/staking/v1beta1/validators?pagination.limit=5000',{},{}
         ) AS resp,
         SYSDATE() AS _inserted_timestamp
 ),
