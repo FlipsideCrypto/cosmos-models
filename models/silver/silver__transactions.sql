@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "unique_key",
+    unique_key = "tx_id",
     incremental_strategy = 'delete+insert',
     cluster_by = 'block_timestamp::DATE',
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
@@ -70,8 +70,7 @@ WHERE
 {% endif %}
 
 qualify ROW_NUMBER() over (
-    PARTITION BY t.block_id,
-    tx_id
+    PARTITION BY tx_id
     ORDER BY
         t._inserted_timestamp DESC
 ) = 1

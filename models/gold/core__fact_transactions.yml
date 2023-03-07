@@ -2,10 +2,6 @@ version: 2
 models:
   - name: core__fact_transactions
     description: Records of all transactions that have occurred on Cosmos, dating back to the genesis block. 
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - UNIQUE_KEY
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -19,6 +15,7 @@ models:
         description: "{{ doc('tx_id') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
+          - unique
       - name: TX_FROM
         description: "{{ doc('tx_from') }}"
         tests: 
