@@ -117,7 +117,6 @@ msgs AS (
     msg,
     concat_ws(
       '-',
-      block_id,
       A.tx_id,
       A.msg_index
     ) AS unique_key,
