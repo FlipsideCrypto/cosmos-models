@@ -23,7 +23,6 @@ SELECT
     ) AS attribute_value,
     concat_ws(
         '-',
-        block_id,
         tx_id,
         msg_index,
         attribute_index
