@@ -192,7 +192,6 @@ cosmos_txs_final AS (
         _inserted_timestamp,
         concat_ws(
             '-',
-            r.block_id,
             r.tx_id,
             r.msg_index,
             currency
@@ -238,7 +237,6 @@ ibc_in_tx AS (
         _inserted_timestamp,
         concat_ws(
             '-',
-            block_id,
             tx_id,
             msg_index,
             currency
@@ -294,7 +292,6 @@ ibc_out_tx AS (
         _inserted_timestamp,
         concat_ws(
             '-',
-            block_id,
             tx_id,
             msg_index,
             currency
