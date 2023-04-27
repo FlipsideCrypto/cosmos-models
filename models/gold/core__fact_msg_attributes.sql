@@ -1,5 +1,8 @@
 {{ config(
-    materialized = 'view'
+    materialized = 'incremental',
+    unique_key = 'unique_key',
+    incremental_strategy = 'merge',
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
 SELECT
@@ -17,6 +20,17 @@ SELECT
     attribute_index,
     attribute_key,
     attribute_value,
-    unique_key
+    unique_key,
+    _inserted_timestamp
 FROM
     {{ ref('silver__msg_attributes') }}
+
+{% if is_incremental() %}
+WHERE
+    _inserted_timestamp :: DATE >= (
+        SELECT
+            MAX(_inserted_timestamp) :: DATE - 2
+        FROM
+            {{ this }}
+    )
+{% endif %}

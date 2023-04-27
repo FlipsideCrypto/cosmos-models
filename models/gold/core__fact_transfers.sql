@@ -1,5 +1,8 @@
 {{ config(
-    materialized = 'view'
+    materialized = 'incremental',
+    unique_key = "unique_key",
+    incremental_strategy = 'merge',
+    cluster_by = ['block_timestamp::DATE'],
 ) }}
 
 SELECT
@@ -12,6 +15,7 @@ SELECT
     amount,
     currency,
     receiver,
-    unique_key
+    unique_key,
+    _inserted_timestamp
 FROM
     {{ ref('silver__transfers') }}

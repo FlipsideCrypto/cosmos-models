@@ -2,7 +2,7 @@
     materialized = 'incremental',
     unique_key = "tx_id",
     incremental_strategy = 'merge',
-    cluster_by = ['block_timestamp::DATE'],
+    cluster_by = ['_inserted_timestamp::DATE'],
 ) }}
 
 WITH
@@ -22,10 +22,10 @@ max_date AS (
 proposal_ids AS (
     SELECT
         tx_id,
-        block_id, 
-        block_timestamp, 
-        tx_succeeded, 
-        attribute_value AS proposal_id, 
+        block_id,
+        block_timestamp,
+        tx_succeeded,
+        attribute_value AS proposal_id,
         _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }}

@@ -2,7 +2,7 @@
   materialized = 'incremental',
   unique_key = "unique_key",
   incremental_strategy = 'delete+insert',
-  cluster_by = ['block_timestamp::DATE'],
+  cluster_by = ['_inserted_timestamp::DATE'],
 ) }}
 
 WITH base_msgs AS (
