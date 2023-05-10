@@ -2,6 +2,7 @@ name: dbt_run_streamline_validators
 run-name: dbt_run_streamline_validators
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 2,8,14,20 * * *'
     
