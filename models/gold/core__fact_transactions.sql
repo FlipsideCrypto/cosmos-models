@@ -15,20 +15,23 @@ max_block_partition AS (
       _inserted_timestamp
     ) AS _inserted_timestamp
   FROM
-    {{ ref('silver__transactions') }}
+    {{ this }}
 ),
 {% endif %}
 
-fee AS (
+atts AS (
   SELECT
     block_id,
     tx_id,
-    attribute_value AS fee
+    msg_index,
+    msg_type,
+    attribute_key,
+    attribute_value
   FROM
     {{ ref('silver__msg_attributes') }}
   WHERE
-    attribute_key = 'fee'
-    AND msg_type = 'tx'
+    msg_type = 'tx'
+    AND attribute_key IN ('fee', 'acc_seq')
 
 {% if is_incremental() %}
 AND _inserted_timestamp :: DATE >= (
@@ -38,6 +41,33 @@ AND _inserted_timestamp :: DATE >= (
     {{ this }}
 )
 {% endif %}
+),
+txs AS (
+  SELECT
+    *
+  FROM
+    {{ ref('silver__transactions') }}
+
+{% if is_incremental() %}
+WHERE
+  _inserted_timestamp :: DATE >= (
+    SELECT
+      MAX(_inserted_timestamp) :: DATE - 2
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
+fee AS (
+  SELECT
+    block_id,
+    tx_id,
+    attribute_value AS fee
+  FROM
+    atts
+  WHERE
+    attribute_key = 'fee'
+    AND msg_type = 'tx'
 ),
 spender AS (
   SELECT
@@ -49,22 +79,11 @@ spender AS (
       0
     ) AS tx_from
   FROM
-    {{ ref('silver__msg_attributes') }}
+    atts
   WHERE
-    attribute_key = 'acc_seq'
-
-{% if is_incremental() %}
-AND _inserted_timestamp :: DATE >= (
-  SELECT
-    MAX(_inserted_timestamp) :: DATE - 2
-  FROM
-    {{ this }}
-)
-{% endif %}
-
-qualify(ROW_NUMBER() over(PARTITION BY tx_id
-ORDER BY
-  msg_index)) = 1
+    attribute_key = 'acc_seq' qualify(ROW_NUMBER() over(PARTITION BY tx_id
+  ORDER BY
+    msg_index)) = 1
 ),
 no_fee_tx_raw AS (
   SELECT
@@ -87,8 +106,8 @@ no_fee_tx_raw AS (
       ELSE '0uatom'
     END AS amount
   FROM
-    {{ ref('silver__transactions') }},
-    TABLE (FLATTEN (input => msgs)) f
+    txs A,
+    TABLE (FLATTEN (input => msgs, outer => TRUE)) f
   WHERE
     tx_id NOT IN (
       SELECT
@@ -130,9 +149,8 @@ no_fee_transactions AS (
     _inserted_timestamp,
     unique_key
   FROM
-    {{ ref('silver__transactions') }}
-    t
-    INNER JOIN no_fee_tx_raw f
+    txs t
+    JOIN no_fee_tx_raw f
     ON t.tx_id = f.tx_id
     AND t.block_id = f.block_id
 ),
@@ -164,8 +182,7 @@ fee_transactions AS (
     _inserted_timestamp,
     unique_key
   FROM
-    {{ ref('silver__transactions') }}
-    t
+    txs t
     INNER JOIN fee f
     ON t.tx_id = f.tx_id
     AND t.block_id = f.block_id
