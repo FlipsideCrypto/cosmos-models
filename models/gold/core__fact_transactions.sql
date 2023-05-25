@@ -106,8 +106,8 @@ no_fee_tx_raw AS (
       ELSE '0uatom'
     END AS amount
   FROM
-    txs A
-    LEFT JOIN TABLE (FLATTEN (input => msgs, outer => TRUE)) f
+    txs A,
+    TABLE (FLATTEN (input => msgs, outer => TRUE)) f
   WHERE
     tx_id NOT IN (
       SELECT
