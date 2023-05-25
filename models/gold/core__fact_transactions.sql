@@ -218,8 +218,4 @@ SELECT
   _inserted_timestamp,
   unique_key
 FROM
-  final_transactions {# qualify ROW_NUMBER() over (
-  PARTITION BY tx_id
-ORDER BY
-  fee DESC
-) = 1 #}
+  final_transactions
