@@ -132,7 +132,7 @@ no_fee_transactions AS (
   FROM
     {{ ref('silver__transactions') }}
     t
-    INNER JOIN no_fee_tx_raw f
+    LEFT OUTER JOIN no_fee_tx_raw f
     ON t.tx_id = f.tx_id
     AND t.block_id = f.block_id
 ),
@@ -202,3 +202,10 @@ SELECT
   unique_key
 FROM
   final_transactions
+
+qualify ROW_NUMBER() over (
+      PARTITION BY tx_id
+      ORDER BY
+        fee DESC
+    ) = 1
+
