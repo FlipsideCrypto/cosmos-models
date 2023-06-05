@@ -26,7 +26,7 @@ max_date AS (
         {{ this }})
     {% endif %}
     SELECT
-        {{ dbt_utils.surrogate_key(
+        {{ dbt_utils.generate_surrogate_key(
             ['block_number']
         ) }} AS id,
         block_number,
@@ -37,7 +37,7 @@ max_date AS (
             "validators"
         ) }}
         JOIN meta b
-        ON b.file_name = metadata$filename
+        ON b.file_name = metadata $ filename
 
 {% if is_incremental() %}
 WHERE
