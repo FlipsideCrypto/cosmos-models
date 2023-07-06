@@ -60,7 +60,7 @@ AND (
 )
 {% endif %}
 
-qualify(DENSE_RANK() over(PARTITION BY tx_id
+qualify(ROW_NUMBER() over(PARTITION BY tx_id
 ORDER BY
     b._inserted_timestamp DESC) = 1)
 ),
