@@ -9,8 +9,13 @@ sources:
       - name: blocks
       - name: tx_search
       - name: validators
+      - name: blockchain
   - name: osmo
     database: osmosis
     schema: silver
     tables: 
       - name: asset_metadata
+  - name: bronze_api
+    schema: bronze_api
+    tables: 
+      - name: blockchain
