@@ -73,7 +73,7 @@ block_gen AS (
         )
         AND (
             SELECT
-                MAX(block_number)
+                MAX(block_id)
             FROM
                 source
         )
