@@ -19,3 +19,8 @@ sources:
     schema: bronze_api
     tables: 
       - name: blockchain
+  - name: crosschain_silver
+    database: "{{ 'crosschain' if target.database == 'COSMOS' else 'crosschain_dev' }}"
+    schema: silver
+    tables:
+      - name: number_sequence
