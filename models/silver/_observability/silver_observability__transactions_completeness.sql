@@ -63,24 +63,28 @@ bronze AS (
 {% if is_incremental() %}
 WHERE
     A._inserted_timestamp >= CURRENT_DATE - 14
-    OR (
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify ROW_NUMBER() over (
-                        ORDER BY
-                            test_timestamp DESC
-                    ) = 1
-            ),
-            LATERAL FLATTEN(
-                input => blocks_impacted_array
-            )
-    ) IS NOT NULL
+    OR {% if var('OBSERV_FULL_TEST') %}
+        1 = 1
+    {% else %}
+        (
+            SELECT
+                MIN(VALUE) - 1
+            FROM
+                (
+                    SELECT
+                        blocks_impacted_array
+                    FROM
+                        {{ this }}
+                        qualify ROW_NUMBER() over (
+                            ORDER BY
+                                test_timestamp DESC
+                        ) = 1
+                ),
+                LATERAL FLATTEN(
+                    input => blocks_impacted_array
+                )
+        ) IS NOT NULL
+    {% endif %}
 {% endif %}
 
 qualify(ROW_NUMBER() over(PARTITION BY A.block_id, tx_id
