@@ -247,6 +247,7 @@ ibc_in_tx AS (
         msg_type = 'write_acknowledgement'
         AND attribute_key = 'packet_data'
         AND TRY_PARSE_JSON(attribute_value): amount IS NOT NULL
+        AND receiver IS NOT NULL
 
 {% if is_incremental() %}
 AND _inserted_timestamp :: DATE >= (
