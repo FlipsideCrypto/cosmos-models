@@ -35,6 +35,7 @@ WHERE
 {% else %}
 )
 {% endif %}
+
 SELECT
     VALUE,
     _partition_by_block_id,
@@ -50,8 +51,11 @@ FROM
         'tx_search'
     ) }}
     JOIN meta m
-    ON m.file_name = metadata $ filename
+    ON m.file_name = metadata$filename
 WHERE
-    DATA: error IS NULL qualify(ROW_NUMBER() over (PARTITION BY block_number
+    DATA: error IS NULL
+    qualify(ROW_NUMBER() over (PARTITION BY block_number
 ORDER BY
     _inserted_timestamp DESC)) = 1
+
+
