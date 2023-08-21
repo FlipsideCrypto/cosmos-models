@@ -1,0 +1,13 @@
+version: 2
+models:
+  - name: core__dim_vote_options
+    description: "{{ doc('deprecation') }}"
+    columns: 
+      - name: VOTE_OPTION
+        description: "{{ doc('vote_option') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist  
+      - name: DESCRIPTION
+        description: This describes the vote option the user selected
+        tests: 
+          - dbt_expectations.expect_column_to_exist

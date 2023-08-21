@@ -1,7 +1,7 @@
 version: 2
 models:
-  - name: core__fact_governance_votes
-    description: Records of all votes on proposals. 
+  - name: core__fact_governance_submit_proposal
+    description: "{{ doc('deprecation') }}"
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
@@ -19,15 +19,15 @@ models:
         description: "{{ doc('tx_succeeded') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: VOTER
-        description: "{{ doc('voter') }}"
+      - name: PROPOSER
+        description: "{{ doc('proposer') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
       - name: PROPOSAL_ID
         description: "{{ doc('proposal_id') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: VOTE_OPTION
-        description: "{{ doc('vote_option') }}"
+      - name: PROPOSAL_TYPE
+        description: "{{ doc('proposal_type') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
