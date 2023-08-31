@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: core__dim_vote_options
+  - name: gov__dim_vote_options
     description: Dimensional table with the vote options on Cosmos and what they correspond to. 
     columns: 
       - name: VOTE_OPTION
