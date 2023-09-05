@@ -5,7 +5,7 @@
     ) returns text api_integration = aws_cosmos_api AS {% if target.name == "prod" %}
         'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/bulk_get_cosmos_blocks'
     {% else %}
-        'https://z97ik1b2d0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_blocks'
+        'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_blocks'
     {%- endif %};
 {% endmacro %}
 
@@ -16,7 +16,7 @@
     ) returns text api_integration = aws_cosmos_api AS {% if target.name == "prod" %}
         'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/bulk_get_cosmos_transactions'
     {% else %}
-        'https://z97ik1b2d0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_transactions'
+        'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_transactions'
     {%- endif %};
 {% endmacro %}
 
@@ -27,7 +27,7 @@
     ) returns text api_integration = aws_cosmos_api AS {% if target.name == "prod" %}
         'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/bulk_get_cosmos_validators'
     {% else %}
-        'https://z97ik1b2d0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_validators'
+        'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_validators'
     {%- endif %};
 {% endmacro %}
 
@@ -38,7 +38,7 @@
     ) returns text api_integration = aws_cosmos_api AS {% if target.name == "prod" %}
         'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/bulk_get_cosmos_generic'
     {% else %}
-        'https://z97ik1b2d0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_generic'
+        'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_generic'
     {%- endif %};
 {% endmacro %}
 
@@ -46,6 +46,6 @@
     CREATE EXTERNAL FUNCTION IF NOT EXISTS streamline.udf_get_cosmos_chainhead() returns variant api_integration = aws_cosmos_api AS {% if target.name == "prod" %}
         'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/get_cosmos_chainhead'
     {% else %}
-        'https://z97ik1b2d0.execute-api.us-east-1.amazonaws.com/dev/get_cosmos_chainhead'
+        'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/get_cosmos_chainhead'
     {%- endif %};
 {% endmacro %}
