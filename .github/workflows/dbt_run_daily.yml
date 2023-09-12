@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-          dbt run --exclude models/silver/_observability/silver_observability* --exclude models/streamline*;
+          dbt run --exclude models/silver/_observability/silver_observability* models/streamline*;
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
