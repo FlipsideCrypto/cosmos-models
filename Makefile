@@ -41,3 +41,11 @@ blocks_history:
 	--profile cosmos \
 	--target $(DBT_TARGET) \
 	--profiles-dir ~/.dbt
+
+tx_history:
+	dbt run \
+	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
+	-m 1+models/streamline/genesis_backfill/streamline__transactions_genesis_backfill_ch1.sql \
+	--profile cosmos \
+	--target $(DBT_TARGET) \
+	--profiles-dir ~/.dbt

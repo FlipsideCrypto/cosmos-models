@@ -6,6 +6,6 @@
 SELECT
     height as block_number
 FROM
-    TABLE(streamline.udtf_get_base_table(200001))
+    TABLE(streamline.udtf_get_base_table(500042))
 WHERE
-    height between 0 and 200000
+    height between 0 and 500042 // https://hub.cosmos.network/main/roadmap/#cosmos-hub-summary
