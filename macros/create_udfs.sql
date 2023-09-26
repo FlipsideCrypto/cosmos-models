@@ -14,7 +14,7 @@
         {{ create_udf_get_cosmos_validators() }}
         {{ create_udf_get_cosmos_generic() }}
         {{ create_udf_get_cosmos_chainhead() }}
-
+        {{ log("CREATING UDFS !!")}}
         {% endset %}
         {% do run_query(sql) %}
     {% endif %}
