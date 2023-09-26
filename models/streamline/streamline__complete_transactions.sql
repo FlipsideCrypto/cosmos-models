@@ -2,51 +2,28 @@
     materialized = "incremental",
     unique_key = "id",
     cluster_by = "ROUND(block_number, -3)",
-    merge_update_columns = ["id"]
+    merge_update_columns = ["id"],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(id)"
 ) }}
+-- depends_on: {{ ref('bronze__streamline_transactions') }}
 
-WITH meta AS (
-
-    SELECT
-        last_modified,
-        file_name
-    FROM
-        TABLE(
-            information_schema.external_table_files(
-                table_name => '{{ source( "bronze_streamline", "tx_search") }}'
-            )
-        ) A
-)
-
-{% if is_incremental() %},
-max_date AS (
-    SELECT
-        COALESCE(MAX(_INSERTED_TIMESTAMP), '1970-01-01' :: DATE) max_INSERTED_TIMESTAMP
-    FROM
-        {{ this }})
-    {% endif %}
-    SELECT
-        {{ dbt_utils.generate_surrogate_key(
-            ['block_number']
-        ) }} AS id,
-        block_number,
-        last_modified AS _inserted_timestamp
-    FROM
-        {{ source(
-            "bronze_streamline",
-            "tx_search"
-        ) }}
-        JOIN meta b
-        ON b.file_name = metadata$filename
+SELECT
+    id,
+    block_number,
+    _inserted_timestamp
+FROM
 
 {% if is_incremental() %}
+{{ ref('bronze__streamline_transactions') }}
 WHERE
-    b.last_modified > (
+    _inserted_timestamp >= (
         SELECT
-            max_INSERTED_TIMESTAMP
+            MAX(_inserted_timestamp) _inserted_timestamp
         FROM
-            max_date
+            {{ this }}
     )
+{% else %}
+    {{ ref('bronze__streamline_FR_transactions') }}
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY id

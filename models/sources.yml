@@ -1,13 +1,14 @@
 version: 2
 
 sources:
-  - name: bronze_streamline
+  - name: bronze
     database: streamline
     schema: |
       {{ "COSMOS_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "COSMOS" }}
     tables:
       - name: blocks
-      - name: tx_search
+      - name: transactions
+        identifier: tx_search
       - name: validators
       - name: blockchain
   - name: osmo
