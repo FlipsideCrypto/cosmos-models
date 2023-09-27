@@ -7,4 +7,3 @@ packages:
     revision: "v1.3.0"
   - package: get-select/dbt_snowflake_query_tags
     version: [">=2.0.0", "<3.0.0"]
-    
