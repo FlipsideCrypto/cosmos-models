@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = 'unique_key',
+    unique_key = ['block_id_requested','unique_key'],
     cluster_by = ['_inserted_timestamp::date']
 ) }}
 -- depends_on: {{ ref('bronze__streamline_transactions') }}
@@ -10,6 +10,10 @@ SELECT
     VALUE,
     _partition_by_block_id,
     block_number AS block_id,
+    REPLACE(
+        metadata :request :params [0],
+        'tx.height='
+    ) :: INT AS block_id_requested,
     metadata,
     DATA,
     DATA :id AS unique_key,
@@ -33,7 +37,3 @@ WHERE
             {{ this }}
     )
 {% endif %}
-
-qualify(ROW_NUMBER() over (PARTITION BY block_number
-ORDER BY
-    _inserted_timestamp DESC)) = 1
