@@ -43,7 +43,8 @@
 {% endmacro %}
 
 {% macro create_udf_get_cosmos_chainhead() %}
-    CREATE EXTERNAL FUNCTION IF NOT EXISTS streamline.udf_get_cosmos_chainhead() 
+    CREATE
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_get_cosmos_chainhead() 
     returns variant {% if target.name == "prod" %}
         api_integration = aws_cosmos_api AS 'https://dazi3rled6.execute-api.us-east-1.amazonaws.com/prod/get_cosmos_chainhead'
     {% else %}

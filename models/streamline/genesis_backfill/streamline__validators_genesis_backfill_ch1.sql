@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}','sm_node_path','prod/cosmos/allthatnode/mainnet_ch1/rpc','call_type','non_batch'))",
+        func = "{{this.schema}}.udf_get_cosmos_validators(object_construct('sql_source', '{{this.identifier}}','sm_node_path','prod/cosmos/allthatnode/mainnet_ch1/rpc','call_type','non_batch'))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
@@ -21,9 +21,9 @@ SELECT
     id,
     block_number
 FROM
-    {{ ref("streamline__complete_transactions") }}
+    {{ ref("streamline__complete_validators") }}
 WHERE
-    block_number between 110500 and 110550 
+    block_number between 110600 and 110650 
     AND block_number IS NOT NULL
 ORDER BY
     block_number

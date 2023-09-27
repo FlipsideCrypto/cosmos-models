@@ -49,3 +49,27 @@ tx_history:
 	--profile cosmos \
 	--target $(DBT_TARGET) \
 	--profiles-dir ~/.dbt
+
+validators_history:
+	dbt run \
+	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
+	-m 1+models/streamline/genesis_backfill/streamline__validators_genesis_backfill_ch1.sql \
+	--profile cosmos \
+	--target $(DBT_TARGET) \
+	--profiles-dir ~/.dbt
+
+tx_realtime: 
+	dbt run \
+	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
+	-m 1+models/streamline/genesis_backfill/streamline__transactions_realtime_test.sql \
+	--profile cosmos \
+	--target dev \
+	--profiles-dir ~/.dbt
+
+validators_realtime: 
+	dbt run \
+	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
+	-m 1+models/streamline/genesis_backfill/tests/streamline__validators_realtime_test.sql \
+	--profile cosmos \
+	--target dev \
+	--profiles-dir ~/.dbt
