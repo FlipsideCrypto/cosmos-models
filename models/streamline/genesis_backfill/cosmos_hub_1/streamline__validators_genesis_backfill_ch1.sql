@@ -13,18 +13,12 @@ SELECT
     block_number
 FROM
     {{ ref("streamline__blocks_ch1") }}
-WHERE
-    block_number between 110640 and 110650 
-    AND block_number IS NOT NULL
 EXCEPT
 SELECT
     id,
     block_number
 FROM
     {{ ref("streamline__complete_validators_ch1") }}
-WHERE
-    block_number between 110600 and 110650 
-    AND block_number IS NOT NULL
 ORDER BY
     block_number
     
