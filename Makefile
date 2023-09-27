@@ -58,10 +58,18 @@ validators_history:
 	--target $(DBT_TARGET) \
 	--profiles-dir ~/.dbt
 
+blocks_realtime: 
+	dbt run \
+	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
+	-m 1+models/streamline/genesis_backfill/tests/streamline__blocks_realtime_test.sql \
+	--profile cosmos \
+	--target dev \
+	--profiles-dir ~/.dbt
+
 tx_realtime: 
 	dbt run \
 	--vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' \
-	-m 1+models/streamline/genesis_backfill/streamline__transactions_realtime_test.sql \
+	-m 1+models/streamline/genesis_backfill/tests/streamline__transactions_realtime_test.sql \
 	--profile cosmos \
 	--target dev \
 	--profiles-dir ~/.dbt
