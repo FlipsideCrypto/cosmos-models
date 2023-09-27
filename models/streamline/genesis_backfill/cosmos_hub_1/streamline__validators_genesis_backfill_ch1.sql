@@ -21,7 +21,7 @@ SELECT
     id,
     block_number
 FROM
-    {{ ref("streamline__complete_validators") }}
+    {{ ref("streamline__complete_validators_ch1") }}
 WHERE
     block_number between 110600 and 110650 
     AND block_number IS NOT NULL

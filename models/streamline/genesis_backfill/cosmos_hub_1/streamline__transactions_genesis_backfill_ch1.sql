@@ -21,7 +21,7 @@ SELECT
     id,
     block_number
 FROM
-    {{ ref("streamline__complete_transactions") }}
+    {{ ref("streamline__complete_transactions_ch1") }}
 WHERE
     block_number between 110500 and 110550 
     AND block_number IS NOT NULL
