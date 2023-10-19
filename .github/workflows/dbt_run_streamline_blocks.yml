@@ -4,7 +4,8 @@ run-name: dbt_run_streamline_blocks
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0,6,12,18 * * *'
+  # “At minute 0 and 30.”
+    - cron: '0,30 * * * *'
      
 env:
   USE_VARS: "${{ vars.USE_VARS }}"

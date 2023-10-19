@@ -6,6 +6,7 @@
         api_integration = aws_cosmos_api AS 'https://bp6s0ib6fk.execute-api.us-east-1.amazonaws.com/prod/bulk_get_cosmos_blocks'
     {% else %}
         api_integration = aws_cosmos_api_dev AS 'https://qkwbozz9l0.execute-api.us-east-1.amazonaws.com/dev/bulk_get_cosmos_blocks'
+
     {%- endif %};
 {% endmacro %}
 

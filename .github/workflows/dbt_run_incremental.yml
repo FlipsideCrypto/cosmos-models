@@ -1,11 +1,11 @@
-name: dbt_run_scheduled_daily
-run-name: dbt_run_scheduled_daily
+name: dbt_run_incremental
+run-name: dbt_run_incremental
 
 on:
   workflow_dispatch:
   schedule:
-    # Runs 04:00 daily (see https://crontab.guru)
-    - cron: '0 4 * * *'
+    # “At minute 16 and 46 every hour”
+    - cron: '16,46 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-          dbt run --exclude models/silver/_observability/silver_observability* --exclude models/streamline*;
+          dbt run --exclude models/silver/_observability/silver_observability* models/streamline*;
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
