@@ -13,7 +13,7 @@ WITH meta AS (
     FROM
         TABLE(
             information_schema.external_table_files(
-                table_name => '{{ source( "bronze_streamline", "blocks_ch3") }}'
+                table_name => '{{ source( "bronze", "blocks_ch3") }}'
             )
         ) A
 )
@@ -33,11 +33,11 @@ max_date AS (
         last_modified AS _inserted_timestamp
     FROM
         {{ source(
-            "bronze_streamline",
+            "bronze",
             "blocks_ch3"
         ) }}
         JOIN meta b
-        ON b.file_name = metadata$filename
+        ON b.file_name = metadata $ filename
 
 {% if is_incremental() %}
 WHERE
