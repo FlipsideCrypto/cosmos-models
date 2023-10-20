@@ -11,6 +11,16 @@ sources:
         identifier: tx_search
       - name: validators
       - name: blockchain
+      - name: blocks_ch1
+      - name: tx_search_ch1
+      - name: validators_ch1
+      - name: blocks_ch2
+      - name: tx_search_ch2
+      - name: validators_ch2
+      - name: blocks_ch3
+      - name: tx_search_ch3
+      - name: validators_ch3
+      
   - name: osmo
     database: osmosis
     schema: silver
