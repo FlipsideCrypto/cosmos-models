@@ -15,6 +15,4 @@ FROM
     {{ ref("streamline__blocks") }}
 WHERE
     block_number between 17448785 and 17584836
-    -- block_number between 17204185 and 17204388
-    -- block_number between 17199205 and 17199922
     AND block_number IS NOT NULL
