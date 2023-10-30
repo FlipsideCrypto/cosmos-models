@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}'))",
+        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}','producer_batch_size', {{var('producer_batch_size','1650000')}}, 'worker_batch_size', {{var('worker_batch_size','8250')}}))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
