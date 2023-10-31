@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}','batch_call_limit','100','producer_batch_size', {{var('producer_batch_size','1650000')}}, 'worker_batch_size', {{var('worker_batch_size','5000')}}))",
+        func = "{{this.schema}}.udf_get_cosmos_transactions(object_construct('sql_source', '{{this.identifier}}','batch_call_limit','100','producer_batch_size', {{var('producer_batch_size','1650000')}}, 'worker_batch_size', {{var('worker_batch_size','2000')}}))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
