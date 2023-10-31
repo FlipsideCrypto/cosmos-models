@@ -1,6 +1,7 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = ['block_id_requested','unique_key'],
+    unique_key = ['block_id_requested'],
+    incremental_strategy = 'delete+insert',
     cluster_by = ['_inserted_timestamp::date']
 ) }}
 -- depends_on: {{ ref('bronze__streamline_transactions') }}
