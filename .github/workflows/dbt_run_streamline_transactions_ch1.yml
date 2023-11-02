@@ -1,5 +1,5 @@
-name: dbt_run_streamline_transactions
-run-name: dbt_run_streamline_transactions
+name: dbt_run_streamline_transactions_ch1
+run-name: dbt_run_streamline_transactions_ch1
 
 on:
   workflow_dispatch:
