@@ -3,9 +3,9 @@ run-name: dbt_run_incremental
 
 on:
   workflow_dispatch:
-  schedule:
-    # “At minute 16 and 46 every hour”
-    - cron: '16,46 * * * *'
+  # schedule:
+  #   # “At minute 16 and 46 every hour”
+  #   - cron: '16,46 * * * *'
 
 env:
   USE_VARS: "${{ vars.USE_VARS }}"
