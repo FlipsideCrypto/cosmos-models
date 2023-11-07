@@ -22,4 +22,4 @@ SELECT
     label,
     project_name
 FROM
-    {{ ref('core__fact_validators') }}
+    {{ ref('gov__fact_validators') }}
