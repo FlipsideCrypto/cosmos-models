@@ -26,14 +26,10 @@ There is more information on how to use dbt docs in the last section of this doc
 
 **Core Fact Tables:**
 - [fact_blocks](#!/model/model.cosmos.core__fact_blocks)
-- [fact_governance_proposal_deposits](#!/model/model.cosmos.core__fact_governance_proposal_deposits)
-- [fact_governance_submit_proposal](#!/model/model.cosmos.core__fact_governance_submit_proposal)
-- [fact_governance_votes](#!/model/model.cosmos.core__fact_governance_votes)
 - [fact_msg_attributes](#!/model/model.cosmos.core__fact_msg_attributes)
 - [fact_msgs](#!/model/model.cosmos.core__fact_msgs)
 - [fact_transactions](#!/model/model.cosmos.core__fact_transactions)
 - [fact_transfers](#!/model/model.cosmos.core__fact_transfers)
-- [fact_validators](#!/model/model.cosmos.core__fact_validators)
 
 **Governance Dimension Tables:**
 - [dim_vote_options](#!/model/model.cosmos_models.gov__dim_vote_options)
