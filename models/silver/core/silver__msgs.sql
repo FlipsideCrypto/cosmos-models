@@ -138,6 +138,12 @@ SELECT
   msg_type,
   msg :: OBJECT AS msg,
   unique_key,
-  _inserted_timestamp
+  {{ dbt_utils.generate_surrogate_key(
+    ['tx_id','msg_index']
+  ) }} AS msgs_id,
+  SYSDATE() AS inserted_timestamp,
+  SYSDATE() AS modified_timestamp,
+  _inserted_timestamp,
+  '{{ invocation_id }}' AS _invocation_id
 FROM
   msgs

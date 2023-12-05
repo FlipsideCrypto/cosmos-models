@@ -121,7 +121,13 @@ SELECT
         ELSE A.vote_option :: INT
     END AS vote_option,
     A.vote_weight,
-    A._inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['a.tx_id','c.proposal_id','b.voter','a.vote_option']
+    ) }} AS governance_votes_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    A._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     fin A
     JOIN (

@@ -47,12 +47,18 @@ SELECT
     tx_code,
     msgs,
     tx_log,
-    t._inserted_timestamp,
     concat_ws(
         '-',
         t.block_id,
         tx_id
-    ) AS unique_key
+    ) AS unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_id']
+    ) }} AS transactions_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    t._inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     base_transactions t
     JOIN {{ ref('silver__blocks') }}

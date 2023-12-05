@@ -31,7 +31,13 @@ SELECT
         A.address,
         creator,
         blockchain
-    ) AS unique_key
+    ) AS unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['unique_key']
+    ) }} AS validators_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref('bronze_api__get_validator_metadata_lcd') }} A
     LEFT JOIN bronze_api.get_validator_metadata b

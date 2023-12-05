@@ -17,6 +17,20 @@ SELECT
     attribute_index,
     attribute_key,
     attribute_value,
-    unique_key
+    unique_key,
+    COALESCE (
+        msg_attributes_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['tx_id','msg_index','attribute_index']
+        ) }}
+    ) AS fact_msg_attributes_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__msg_attributes') }}

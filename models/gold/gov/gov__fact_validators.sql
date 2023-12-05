@@ -23,6 +23,20 @@ SELECT
     RANK,
     num_governance_votes,
     raw_metadata,
-    unique_key
+    unique_key,
+    COALESCE (
+        validators_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['unique_key']
+        ) }}
+    ) AS fact_validators_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__validators') }}

@@ -357,8 +357,14 @@ SELECT
     currency,
     receiver,
     msg_index,
+    unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['unique_key']
+    ) }} AS transfers_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
     _inserted_timestamp,
-    unique_key
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     ibc_tx_final
 UNION ALL
@@ -373,7 +379,13 @@ SELECT
     currency,
     receiver,
     msg_index,
+    unique_key,
+    {{ dbt_utils.generate_surrogate_key(
+        ['unique_key']
+    ) }} AS transfers_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
     _inserted_timestamp,
-    unique_key
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     cosmos_txs_final
