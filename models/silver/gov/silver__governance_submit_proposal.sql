@@ -22,10 +22,10 @@ max_date AS (
 proposal_ids AS (
     SELECT
         tx_id,
-        block_id, 
-        block_timestamp, 
-        tx_succeeded, 
-        attribute_value AS proposal_id, 
+        block_id,
+        block_timestamp,
+        tx_succeeded,
+        attribute_value AS proposal_id,
         _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }}
@@ -97,7 +97,13 @@ SELECT
     proposer,
     p.proposal_id :: NUMBER AS proposal_id,
     y.proposal_type,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['p.tx_id']
+    ) }} AS governance_submit_proposal_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     proposal_ids p
     INNER JOIN proposal_type y

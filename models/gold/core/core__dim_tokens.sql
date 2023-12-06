@@ -13,14 +13,22 @@ SELECT
     alias,
     DECIMAL,
     raw_metadata,
-    concat_ws(
-        '-',
-        address,
-        creator,
-        blockchain
-    ) AS unique_key
+    unique_key,
+    COALESCE (
+        osmo_assets_id,
+        {{ dbt_utils.generate_surrogate_key(
+            ['unique_key']
+        ) }}
+    ) AS dim_tokens_id,
+    COALESCE(
+        inserted_timestamp,
+        '2000-01-01'
+    ) AS inserted_timestamp,
+    COALESCE(
+        modified_timestamp,
+        '2000-01-01'
+    ) AS modified_timestamp
 FROM
-    {{ source(
-        'osmo',
-        'asset_metadata'
+    {{ ref(
+        'silver__osmos_assets'
     ) }}

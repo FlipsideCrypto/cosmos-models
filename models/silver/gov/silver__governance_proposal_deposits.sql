@@ -22,10 +22,10 @@ max_date AS (
 proposal_ids AS (
     SELECT
         tx_id,
-        block_id, 
-        block_timestamp, 
+        block_id,
+        block_timestamp,
         tx_succeeded,
-        attribute_value AS proposal_id, 
+        attribute_value AS proposal_id,
         _inserted_timestamp
     FROM
         {{ ref('silver__msg_attributes') }}
@@ -108,10 +108,16 @@ SELECT
     p.tx_id,
     tx_succeeded,
     d.depositor,
-    p.proposal_id :: NUMBER as proposal_id,
-    v.amount :: NUMBER as amount,
+    p.proposal_id :: NUMBER AS proposal_id,
+    v.amount :: NUMBER AS amount,
     v.currency,
-    _inserted_timestamp
+    {{ dbt_utils.generate_surrogate_key(
+        ['v.tx_id']
+    ) }} AS governance_proposal_deposits_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    _inserted_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
 FROM
     deposit_value v
     INNER JOIN proposal_ids p
