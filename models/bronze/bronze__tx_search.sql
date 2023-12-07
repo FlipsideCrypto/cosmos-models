@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = ['block_id_requested'],
+    unique_key = ['block_id_requested','unique_key'],
     incremental_strategy = 'delete+insert',
     cluster_by = ['_inserted_timestamp::date']
 ) }}
