@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_blocks(object_construct('sql_source', '{{this.identifier}}','sm_node_path','prod/cosmos/allthatnode/mainnet_ch3/rpc', 'call_type','non_batch','external_table','blocks_ch3','producer_batch_size','1024000','worker_batch_size','32000'))",
+        func = "{{this.schema}}.udf_get_cosmos_blocks(object_construct('sql_source', '{{this.identifier}}','sm_node_path','prod/cosmos/allthatnode/mainnet_ch3/rpc', 'call_type','non_batch','external_table','blocks_ch3','producer_batch_size','50000','worker_batch_size','12500'))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}

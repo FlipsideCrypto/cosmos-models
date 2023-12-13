@@ -1,5 +1,5 @@
-name: dbt_run_streamline_blocks_ch2
-run-name: dbt_run_streamline_blocks_ch2
+name: dbt_run_streamline_blocks_ch3
+run-name: dbt_run_streamline_blocks_ch3
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
     uses: FlipsideCrypto/analytics-workflow-templates/.github/workflows/dbt_run_template.yml@main
     with:
       dbt_command: |
-          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/streamline/genesis_backfill/cosmos_hub_2/streamline__blocks_genesis_backfill_ch2.sql
+          dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m 1+models/streamline/genesis_backfill/cosmos_hub_3/streamline__blocks_genesis_backfill_ch3.sql
       environment: workflow_prod
       warehouse: ${{ vars.WAREHOUSE }}
     secrets: inherit 
