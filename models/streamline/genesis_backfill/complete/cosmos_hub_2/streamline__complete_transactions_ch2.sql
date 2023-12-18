@@ -38,9 +38,9 @@ max_date AS (
         ) }}
         JOIN meta b
         ON b.file_name = metadata$filename
-
+WHERE last_modified::DATE >= '2023-12-14' 
 {% if is_incremental() %}
-WHERE
+AND
     b.last_modified > (
         SELECT
             max_INSERTED_TIMESTAMP
