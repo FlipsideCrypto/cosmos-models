@@ -38,15 +38,16 @@ max_date AS (
         ) }}
         JOIN meta b
         ON b.file_name = metadata$filename
-WHERE last_modified::DATE >= '2023-12-14' 
+    WHERE
+        last_modified :: DATE >= '2023-12-21'
+
 {% if is_incremental() %}
-AND
-    b.last_modified > (
-        SELECT
-            max_INSERTED_TIMESTAMP
-        FROM
-            max_date
-    )
+AND b.last_modified > (
+    SELECT
+        max_INSERTED_TIMESTAMP
+    FROM
+        max_date
+)
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY id
