@@ -1,0 +1,69 @@
+version: 2
+models:
+  - name: silver__blocks_ch2
+    description: Block range is from 500,043 to 2,901,999)
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - _UNIQUE_KEY
+      - sequence_gaps:
+          column_name: block_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      - name: BLOCKCHAIN
+        description: "{{ doc('blockchain') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: CHAIN_ID
+        description: "{{ doc('chain_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: TX_COUNT
+        description: "{{ doc('tx_count') }}"
+        tests: 
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT 
+      - name: PROPOSER_ADDRESS
+        description: "{{ doc('proposer_address') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: VALIDATOR_HASH
+        description: "{{ doc('validator_hash') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: _INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+
