@@ -5,6 +5,8 @@ name: "cosmos_models"
 version: "1.0.0"
 config-version: 2
 
+require-dbt-version: ">=1.7.0"
+
 # This setting configures which "profile" dbt uses for this project.
 profile: "cosmos"
 
@@ -57,7 +59,7 @@ vars:
   STREAMLINE_INVOKE_STREAMS: False
   STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: False
   "UPDATE_SNOWFLAKE_TAGS": True
-  OBSERV_FULL_TEST: FALSE
+  OBSERV_FULL_TEST: TRUE
   START_GHA_TASKS: False
   API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}' 
   EXTERNAL_FUNCTION_URI: '{{ var("config")[target.name]["EXTERNAL_FUNCTION_URI"] if var("config")[target.name] else var("config")["dev"]["EXTERNAL_FUNCTION_URI"] }}'
