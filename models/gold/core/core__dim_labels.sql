@@ -26,7 +26,7 @@ SELECT
     ) AS modified_timestamp
 FROM
     {{ ref('core__dim_tokens') }}
-UNION
+UNION ALL
 SELECT
     blockchain,
     creator,
@@ -51,3 +51,19 @@ SELECT
     ) AS modified_timestamp
 FROM
     {{ ref('gov__fact_validators') }}
+UNION ALL
+SELECT
+    blockchain,
+    creator,
+    address,
+    label_type,
+    label_subtype,
+    address_name AS label,
+    project_name,
+    labels_combined_id AS dim_labels_id,
+    inserted_timestamp,
+    modified_timestamp
+FROM
+    {{ ref('silver__address_labels') }}
+WHERE
+    label_subtype <> 'validator'
