@@ -1,13 +1,13 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_get_cosmos_blocks(object_construct('sql_source', '{{this.identifier}}'))",
+        func = "{{this.schema}}.udf_get_cosmos_blocks(object_construct('sql_source', '{{this.identifier}}', 'call_type','NON_BATCH', 'batch_call_limit', 20))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
 
 SELECT
-    {{ dbt_utils.generate_surrogate_key(
+    {{ dbt_utils.surrogate_key(
         ['block_number']
     ) }} AS id,
     block_number
