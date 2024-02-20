@@ -19,29 +19,32 @@ There is more information on how to use dbt docs in the last section of this doc
 
 ### Core Tables (`Cosmos`.`CORE`.`<table_name>`)
 ### Governance Tables (`Cosmos`.`GOV`.`<table_name>`)
+### Statistics/Analytics Tables (`COSMOS`.`STATS`.`<table_name>`)
 
 **Core Dimension Tables:**
 - [dim_labels](#!/model/model.cosmos_models.core__dim_labels)
 - [dim_tokens](#!/model/model.cosmos_models.core__dim_tokens)
 
 **Core Fact Tables:**
-- [fact_blocks](#!/model/model.cosmos.core__fact_blocks)
-- [fact_msg_attributes](#!/model/model.cosmos.core__fact_msg_attributes)
-- [fact_msgs](#!/model/model.cosmos.core__fact_msgs)
-- [fact_transactions](#!/model/model.cosmos.core__fact_transactions)
-- [fact_transfers](#!/model/model.cosmos.core__fact_transfers)
+- [fact_blocks](#!/model/model.cosmos_models.core__fact_blocks)
+- [fact_msg_attributes](#!/model/model.cosmos_models.core__fact_msg_attributes)
+- [fact_msgs](#!/model/model.cosmos_models.core__fact_msgs)
+- [fact_transactions](#!/model/model.cosmos_models.core__fact_transactions)
+- [fact_transfers](#!/model/model.cosmos_models.core__fact_transfers)
 
 **Governance Dimension Tables:**
 - [dim_vote_options](#!/model/model.cosmos_models.gov__dim_vote_options)
 
 
 **Governance Fact Tables:**
-- [fact_governance_proposal_deposits](#!/model/model.cosmos.gov__fact_governance_proposal_deposits)
-- [fact_governance_submit_proposal](#!/model/model.cosmos.gov__fact_governance_submit_proposal)
-- [fact_governance_votes](#!/model/model.cosmos.gov__fact_governance_votes)
-- [fact_msg_attributes](#!/model/model.cosmos.core__fact_msg_attributes)
-- [fact_validators](#!/model/model.cosmos.gov__fact_validators)
+- [fact_governance_proposal_deposits](#!/model/model.cosmos_models.gov__fact_governance_proposal_deposits)
+- [fact_governance_submit_proposal](#!/model/model.cosmos_models.gov__fact_governance_submit_proposal)
+- [fact_governance_votes](#!/model/model.cosmos_models.gov__fact_governance_votes)
+- [fact_msg_attributes](#!/model/model.cosmos_models.core__fact_msg_attributes)
+- [fact_validators](#!/model/model.cosmos_models.gov__fact_validators)
 
+**Stats EZ Tables:**
+- [ez_core_metrics_hourly](#!/model/model.cosmos_models.ez_core_metrics_hourly)
 
 ## **Data Model Overview**
 
