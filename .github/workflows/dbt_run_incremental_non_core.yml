@@ -43,4 +43,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m models/silver/gov models/gold/gov
+          dbt run -m models/silver/gov models/gold/gov 1+models/gold/stats/stats__ez_core_metrics_hourly.sql
