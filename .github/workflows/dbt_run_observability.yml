@@ -38,9 +38,13 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click
+          pip3 install dbt-snowflake==${{ vars.DBT_VERSION }} cli_passthrough requests click workstream-dbt-core
           dbt deps
       - name: Run DBT Jobs
         run: |
           dbt run -m models/silver/_observability/silver_observability*
+          workstream report 
+        env:
+          WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
+          WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}
 
