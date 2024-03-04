@@ -64,8 +64,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          ${{ inputs.dbt_command }}
-          workstream report 
+          ${{ inputs.dbt_command }}  || true
+          workstream report --exit-nonzero 
         env:
           WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
           WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

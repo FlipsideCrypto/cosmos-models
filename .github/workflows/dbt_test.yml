@@ -42,8 +42,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt test -m models/bronze models/silver models/gold --exclude models/bronze/genesis_backfill models/silver/core/genesis_backfill
-          workstream report 
+          dbt test -m models/bronze models/silver models/gold --exclude models/bronze/genesis_backfill models/silver/core/genesis_backfill || true
+          workstream report --exit-nonzero 
         env:
           WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
           WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

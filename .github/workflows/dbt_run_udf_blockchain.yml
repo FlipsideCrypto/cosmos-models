@@ -42,11 +42,11 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run-operation get_blockchain_api
-          dbt run -m models/silver/core/silver__blockchain.sql
-          dbt run-operation get_blockchain_api
-          dbt run -m models/silver/core/silver__blockchain.sql
-          workstream report 
+          dbt run-operation get_blockchain_api || true
+          dbt run -m models/silver/core/silver__blockchain.sql || true
+          dbt run-operation get_blockchain_api || true
+          dbt run -m models/silver/core/silver__blockchain.sql || true
+          workstream report --exit-nonzero 
         env:
           WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
           WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}

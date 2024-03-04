@@ -42,8 +42,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m models/silver/_observability/silver_observability*
-          workstream report 
+          dbt run -m models/silver/_observability/silver_observability* || true
+          workstream report --exit-nonzero 
         env:
           WORKSTREAM_DBT_CLIENT_ID: ${{ secrets.WORKSTREAM_DBT_CLIENT_ID }}
           WORKSTREAM_DBT_CLIENT_SECRET: ${{ secrets.WORKSTREAM_DBT_CLIENT_SECRET }}
