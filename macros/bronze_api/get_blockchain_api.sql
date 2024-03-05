@@ -39,7 +39,7 @@ INSERT INTO
               *,
               MOD(ROW_NUMBER() over(
             ORDER BY
-              min_block), 200) rn_mod_out
+              min_block), 100) rn_mod_out
             FROM
               (
                 SELECT
@@ -106,7 +106,16 @@ INSERT INTO
   )
 SELECT
   call,
-  ethereum.streamline.udf_json_rpc_call(('https://cosmos-rpc.polkachu.com/'),{}, call) AS DATA,
+  {{ target.database }}.live.udf_api (
+    'POST',
+    '{service}/{x-allthatnode-api-key}',
+    OBJECT_CONSTRUCT(
+      'Content-Type',
+      'application/json'
+    ),
+    call,
+    'Vault/prod/cosmos/allthatnode/mainnet-archive/rpc'
+  ) AS DATA,
   SYSDATE()
 FROM
   calls;
