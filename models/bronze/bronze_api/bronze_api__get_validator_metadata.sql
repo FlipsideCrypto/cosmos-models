@@ -7,7 +7,7 @@
 WITH call AS (
 
     SELECT
-        ethereum.streamline.udf_api(
+        {{ target.database }}.live.udf_api(
             'GET',
             'https://api.cosmoscan.net/validators',{},{}
         ) AS resp,

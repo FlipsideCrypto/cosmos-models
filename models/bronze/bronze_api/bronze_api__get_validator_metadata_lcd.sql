@@ -5,7 +5,7 @@
 WITH call AS (
 
     SELECT
-        ethereum.streamline.udf_api(
+        {{ target.database }}.live.udf_api(
             'GET',
             'https://lcd-cosmoshub.keplr.app/cosmos/staking/v1beta1/validators?pagination.limit=5000',{},{}
         ) AS resp,
