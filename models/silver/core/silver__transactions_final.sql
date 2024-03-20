@@ -90,7 +90,11 @@ no_fee_tx_raw AS (
     block_id,
     tx_id,
     f.index,
-    f.value: TYPE :: STRING AS event_type,
+    f.value ::string,
+        COALESCE(
+      f.value: TYPE :: STRING,
+      f.value: type :: STRING
+     ) AS event_type,
     TRY_BASE64_DECODE_STRING(
       f.value :attributes [0] :value
     ) AS recipient,
