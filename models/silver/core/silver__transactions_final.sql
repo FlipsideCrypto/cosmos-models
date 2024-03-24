@@ -94,15 +94,45 @@ no_fee_tx_raw AS (
       f.value: TYPE,
       f.value: "type"
     ) :: STRING AS event_type,
-    TRY_BASE64_DECODE_STRING(
-      f.value :attributes [0] :value
-    ) AS recipient,
-    TRY_BASE64_DECODE_STRING(
-      f.value :attributes [1] :value
-    ) AS sender,
-    TRY_BASE64_DECODE_STRING(
-      f.value :attributes [2] :value
-    ) AS amount_raw,
+    CASE
+      WHEN block_id >= 19639600
+      OR (
+        block_id BETWEEN 19639060
+        AND 19639600
+        AND TRY_BASE64_DECODE_STRING(
+          f.value :attributes [0] :value
+        ) IS NULL
+      ) THEN f.value :attributes [0] :value
+      ELSE TRY_BASE64_DECODE_STRING(
+        f.value :attributes [0] :value
+      )
+    END AS recipient,
+    CASE
+      WHEN block_id >= 19639600
+      OR (
+        block_id BETWEEN 19639060
+        AND 19639600
+        AND TRY_BASE64_DECODE_STRING(
+          f.value :attributes [0] :value
+        ) IS NULL
+      ) THEN f.value :attributes [1] :value
+      ELSE TRY_BASE64_DECODE_STRING(
+        f.value :attributes [1] :value
+      )
+    END AS sender,
+    CASE
+      WHEN block_id >= 19639600
+      OR (
+        block_id BETWEEN 19639060
+        AND 19639600
+        AND TRY_BASE64_DECODE_STRING(
+          f.value :attributes [0] :value
+        ) IS NULL
+      ) THEN f.value :attributes [2] :value
+      ELSE TRY_BASE64_DECODE_STRING(
+        f.value :attributes [2] :value
+      )
+    END AS amount_raw,
     CASE
       WHEN amount_raw LIKE '%uatom'
       AND amount_raw NOT LIKE '%ibc%' THEN amount_raw

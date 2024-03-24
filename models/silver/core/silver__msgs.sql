@@ -18,9 +18,19 @@ WITH base_msgs AS (
     f.index :: INT AS msg_index,
     msg :type :: STRING AS msg_type,
     IFF(
-      TRY_BASE64_DECODE_STRING(
-        msg :attributes [0] :key :: STRING
-      ) = 'action',
+      CASE
+        WHEN block_id >= 19639600
+        OR (
+          block_id BETWEEN 19639060
+          AND 19639600
+          AND TRY_BASE64_DECODE_STRING(
+            msg :attributes [0] :key
+          ) IS NULL
+        ) THEN msg :attributes [0] :key
+        ELSE TRY_BASE64_DECODE_STRING(
+          msg :attributes [0] :key
+        )
+      END :: STRING = 'action',
       TRUE,
       FALSE
     ) AS is_action,
@@ -31,18 +41,48 @@ WITH base_msgs AS (
         -1
     ) AS msg_group,
     IFF(
-      TRY_BASE64_DECODE_STRING(
-        msg :attributes [0] :key :: STRING
-      ) = 'module',
+      CASE
+        WHEN block_id >= 19639600
+        OR (
+          block_id BETWEEN 19639060
+          AND 19639600
+          AND TRY_BASE64_DECODE_STRING(
+            msg :attributes [0] :key
+          ) IS NULL
+        ) THEN msg :attributes [0] :key
+        ELSE TRY_BASE64_DECODE_STRING(
+          msg :attributes [0] :key
+        )
+      END :: STRING = 'module',
       TRUE,
       FALSE
     ) AS is_module,
-    TRY_BASE64_DECODE_STRING(
-      msg :attributes [0] :key :: STRING
-    ) AS attribute_key,
-    TRY_BASE64_DECODE_STRING(
-      msg :attributes [0] :value :: STRING
-    ) AS attribute_value,
+    CASE
+      WHEN block_id >= 19639600
+      OR (
+        block_id BETWEEN 19639060
+        AND 19639600
+        AND TRY_BASE64_DECODE_STRING(
+          msg :attributes [0] :key
+        ) IS NULL
+      ) THEN msg :attributes [0] :key
+      ELSE TRY_BASE64_DECODE_STRING(
+        msg :attributes [0] :key
+      )
+    END :: STRING AS attribute_key,
+    CASE
+      WHEN block_id >= 19639600
+      OR (
+        block_id BETWEEN 19639060
+        AND 19639600
+        AND TRY_BASE64_DECODE_STRING(
+          msg :attributes [0] :key
+        ) IS NULL
+      ) THEN msg :attributes [0] :key
+      ELSE TRY_BASE64_DECODE_STRING(
+        msg :attributes [0] :value
+      )
+    END AS attribute_value,
     t._inserted_timestamp
   FROM
     {{ ref(

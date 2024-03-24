@@ -15,12 +15,32 @@ SELECT
     msg_index,
     msg_type,
     b.index AS attribute_index,
-    TRY_BASE64_DECODE_STRING(
-        b.value :key :: STRING
-    ) AS attribute_key,
-    TRY_BASE64_DECODE_STRING(
-        b.value :value :: STRING
-    ) AS attribute_value,
+    CASE
+        WHEN block_id >= 19639600
+        OR (
+            block_id BETWEEN 19639060
+            AND 19639600
+            AND TRY_BASE64_DECODE_STRING(
+                b.value :key
+            ) IS NULL
+        ) THEN b.value :key
+        ELSE TRY_BASE64_DECODE_STRING(
+            b.value :key
+        )
+    END AS attribute_key,
+    CASE
+        WHEN block_id >= 19639600
+        OR (
+            block_id BETWEEN 19639060
+            AND 19639600
+            AND TRY_BASE64_DECODE_STRING(
+                b.value :key
+            ) IS NULL
+        ) THEN b.value :value
+        ELSE TRY_BASE64_DECODE_STRING(
+            b.value :value
+        )
+    END AS attribute_value,
     concat_ws(
         '-',
         tx_id,
