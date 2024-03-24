@@ -86,8 +86,33 @@ fin AS (
             attribute_value :: variant
         ) AS j,
         {# j :proposal_id :: INT AS proposal_id, #}
-        j :option :: STRING AS vote_option,
-        j :weight :: FLOAT AS vote_weight
+        j :option :: STRING AS vote_option_raw,
+        j :weight :: STRING AS vote_weight_raw,
+        CASE
+            WHEN vote_option_raw ILIKE '%option%weight%' THEN REPLACE(
+                SPLIT_PART(
+                    vote_option_raw,
+                    ' ',
+                    1
+                ),
+                'option:'
+            )
+            ELSE vote_option_raw
+        END :: STRING AS vote_option,
+        CASE
+            WHEN vote_option_raw ILIKE '%option%weight%' THEN REPLACE(
+                REPLACE(
+                    SPLIT_PART(
+                        vote_option_raw,
+                        ' ',
+                        2
+                    ),
+                    'weight:'
+                ),
+                '"'
+            )
+            ELSE vote_weight_raw
+        END :: FLOAT AS vote_weight
     FROM
         base_atts
     WHERE
