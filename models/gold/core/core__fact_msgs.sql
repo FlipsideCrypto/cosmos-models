@@ -32,3 +32,65 @@ SELECT
     ) AS modified_timestamp
 FROM
     {{ ref('silver__msgs') }}
+UNION ALL
+SELECT
+    block_id,
+    block_timestamp,
+    tx_id,
+    tx_succeeded,
+    CONCAT(
+        msg_group,
+        ':',
+        msg_sub_group
+    ) AS msg_group,
+    msg_index,
+    msg_type,
+    msg,
+    unique_key,
+    msgs_id as fact_msgs_id,
+    inserted_timestamp,
+    modified_timestamp
+FROM
+    {{ ref('silver__msgs_ch1') }}
+UNION ALL
+SELECT
+    block_id,
+    block_timestamp,
+    tx_id,
+    tx_succeeded,
+    CONCAT(
+        msg_group,
+        ':',
+        msg_sub_group
+    ) AS msg_group,
+    msg_index,
+    msg_type,
+    msg,
+    unique_key,
+    msgs_id as fact_msgs_id,
+    inserted_timestamp,
+    modified_timestamp
+FROM
+    {{ ref('silver__msgs_ch2') }}
+UNION ALL
+SELECT
+    block_id,
+    block_timestamp,
+    tx_id,
+    tx_succeeded,
+    CONCAT(
+        msg_group,
+        ':',
+        msg_sub_group
+    ) AS msg_group,
+    msg_index,
+    msg_type,
+    msg,
+    unique_key,
+    msgs_id as fact_msgs_id,
+    inserted_timestamp,
+    modified_timestamp
+FROM
+    {{ ref('silver__msgs_ch3') }}
+
+

@@ -44,7 +44,7 @@ WITH base_msgs AS (
     t._inserted_timestamp
   FROM
     {{ ref(
-      'silver__transactions_ch1'
+      'silver__transactions_ch2'
     ) }}
     t,
     LATERAL FLATTEN(
