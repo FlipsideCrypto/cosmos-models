@@ -80,12 +80,15 @@ fin AS (
         msg_group,
         msg_sub_group,
         msg_sub_sub_group,
+        msg_index,
         _inserted_timestamp,
         OBJECT_AGG(
             attribute_key :: STRING,
             attribute_value :: variant
         ) AS j,
         {# j :proposal_id :: INT AS proposal_id, #}
+        j :proposal_id :: INT AS proposal_id,
+        j :voter :: STRING AS voter,
         j :option :: STRING AS vote_option_raw,
         j :weight :: STRING AS vote_weight_raw,
         CASE
@@ -119,7 +122,9 @@ fin AS (
         msg_type = 'proposal_vote'
         AND attribute_key IN (
             'option',
-            'weight'
+            'weight',
+            'proposal_id',
+            'voter'
         )
     GROUP BY
         block_id,
@@ -129,61 +134,85 @@ fin AS (
         msg_group,
         msg_sub_group,
         msg_sub_sub_group,
+        msg_index,
         _inserted_timestamp
+),
+fin_fin AS (
+    SELECT
+        A.block_id,
+        A.block_timestamp,
+        A.tx_id,
+        A.tx_succeeded,
+        COALESCE(
+            A.voter,
+            b.voter
+        ) AS voter,
+        COALESCE(
+            A.proposal_id,
+            C.proposal_id
+        ) AS proposal_id,
+        CASE
+            WHEN A.vote_option = 'VOTE_OPTION_YES' THEN 1
+            WHEN A.vote_option = 'VOTE_OPTION_ABSTAIN' THEN 2
+            WHEN A.vote_option = 'VOTE_OPTION_NO' THEN 3
+            WHEN A.vote_option = 'VOTE_OPTION_NO_WITH_VETO' THEN 4
+            ELSE A.vote_option :: INT
+        END AS vote_option,
+        A.vote_weight,
+        A.msg_group,
+        _inserted_timestamp
+    FROM
+        fin A
+        LEFT JOIN (
+            SELECT
+                tx_id,
+                msg_group,
+                msg_sub_group,
+                attribute_value AS voter
+            FROM
+                base_atts
+            WHERE
+                msg_type = 'message'
+                AND attribute_key = 'sender'
+        ) b
+        ON A.tx_id = b.tx_id
+        AND A.msg_group = b.msg_group
+        AND A.msg_sub_group = b.msg_sub_group
+        AND A.voter IS NULL
+        LEFT JOIN (
+            SELECT
+                tx_id,
+                msg_group,
+                msg_sub_group,
+                attribute_value :: INT AS proposal_id
+            FROM
+                base_atts
+            WHERE
+                msg_type = 'proposal_vote'
+                AND attribute_key = 'proposal_id'
+        ) C
+        ON A.tx_id = C.tx_id
+        AND A.msg_group = C.msg_group
+        AND A.msg_sub_group = C.msg_sub_group
+        AND A.proposal_id IS NULL
 )
 SELECT
-    A.block_id,
-    A.block_timestamp,
-    A.tx_id,
-    A.tx_succeeded,
-    b.voter,
-    C.proposal_id,
-    CASE
-        WHEN A.vote_option = 'VOTE_OPTION_YES' THEN 1
-        WHEN A.vote_option = 'VOTE_OPTION_ABSTAIN' THEN 2
-        WHEN A.vote_option = 'VOTE_OPTION_NO' THEN 3
-        WHEN A.vote_option = 'VOTE_OPTION_NO_WITH_VETO' THEN 4
-        ELSE A.vote_option :: INT
-    END AS vote_option,
-    A.vote_weight,
+    block_id,
+    block_timestamp,
+    tx_id,
+    tx_succeeded,
+    voter,
+    proposal_id,
+    vote_option,
+    vote_weight,
     {{ dbt_utils.generate_surrogate_key(
-        ['a.tx_id','c.proposal_id','b.voter','a.vote_option']
+        ['tx_id','proposal_id','voter','vote_option']
     ) }} AS governance_votes_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
-    A._inserted_timestamp,
+    _inserted_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    fin A
-    JOIN (
-        SELECT
-            tx_id,
-            msg_group,
-            msg_sub_group,
-            attribute_value AS voter
-        FROM
-            base_atts
-        WHERE
-            msg_type = 'message'
-            AND attribute_key = 'sender'
-    ) b
-    ON A.tx_id = b.tx_id
-    AND A.msg_group = b.msg_group
-    AND A.msg_sub_group = b.msg_sub_group
-    JOIN (
-        SELECT
-            tx_id,
-            msg_group,
-            msg_sub_group,
-            attribute_value :: INT AS proposal_id
-        FROM
-            base_atts
-        WHERE
-            msg_type = 'proposal_vote'
-            AND attribute_key = 'proposal_id'
-    ) C
-    ON A.tx_id = C.tx_id
-    AND A.msg_group = C.msg_group
-    AND A.msg_sub_group = C.msg_sub_group qualify(ROW_NUMBER() over (PARTITION BY A.tx_id, b.voter, C.proposal_id, vote_option
+    fin_fin qualify(ROW_NUMBER() over (PARTITION BY tx_id, voter, proposal_id, vote_option
 ORDER BY
-    A.msg_group DESC) = 1)
+    msg_group DESC) = 1)
