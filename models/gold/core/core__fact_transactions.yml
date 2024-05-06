@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: core__fact_transactions
-    description: Records of all transactions that have occurred on Cosmos, dating back to the genesis block. 
+    description: Records of all transactions that have occurred on Cosmos, dating back to the genesis block. NOTE - FOR CHAIN VERSIONS 1-3 THE TX_FROM, FEE, AND FEE_DENOM COLUMNS ARE ALWAYS NULL. (This info may be available in the msgs column, but we are not parsing it out at this time.)
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"

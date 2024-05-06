@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: core__fact_msgs
-    description: Records of all message attributes associated to messages that have occurred on Cosmos, dating back to the genesis block. 
+    description: Records of all message attributes associated to messages that have occurred on Cosmos from chain version 4 and beyond. (This info may be available in the msgs column in core.fact_transactions, but we are not parsing it out at this time.)
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
