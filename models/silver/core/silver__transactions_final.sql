@@ -166,26 +166,39 @@ no_fee_transactions AS (
       amount,
       '0uatom'
     ) AS fee_raw,
-    REGEXP_SUBSTR(
+    {# REGEXP_SUBSTR(
+    fee_raw,
+    '[0-9]+'
+) AS fee,
+REGEXP_SUBSTR(
+  fee_raw,
+  '[a-z]+'
+) AS fee_denom,
+#}
+SPLIT_PART(
+  TRIM(
+    REGEXP_REPLACE(
       fee_raw,
-      '[0-9]+'
-    ) AS fee,
-    REGEXP_SUBSTR(
-      fee_raw,
-      '[a-z]+'
-    ) AS fee_denom,
-    gas_used,
-    gas_wanted,
-    tx_code,
-    tx_log,
-    msgs,
-    _inserted_timestamp,
-    unique_key
-  FROM
-    txs t
-    JOIN no_fee_tx_raw f
-    ON t.tx_id = f.tx_id
-    AND t.block_id = f.block_id
+      '[^[:digit:]]',
+      ' '
+    )
+  ),
+  ' ',
+  0
+) AS fee,
+RIGHT(fee_raw, LENGTH(fee_raw) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(fee_raw, '[^[:digit:]]', ' ')), ' ', 0))) AS fee_denom,
+gas_used,
+gas_wanted,
+tx_code,
+tx_log,
+msgs,
+_inserted_timestamp,
+unique_key
+FROM
+  txs t
+  JOIN no_fee_tx_raw f
+  ON t.tx_id = f.tx_id
+  AND t.block_id = f.block_id
 ),
 fee_transactions AS (
   SELECT
@@ -199,29 +212,42 @@ fee_transactions AS (
       fee,
       '0uatom'
     ) AS fee_raw,
-    REGEXP_SUBSTR(
+    {# REGEXP_SUBSTR(
+    fee_raw,
+    '[0-9]+'
+) AS fee,
+REGEXP_SUBSTR(
+  fee_raw,
+  '[a-z]+'
+) AS fee_denom,
+#}
+SPLIT_PART(
+  TRIM(
+    REGEXP_REPLACE(
       fee_raw,
-      '[0-9]+'
-    ) AS fee,
-    REGEXP_SUBSTR(
-      fee_raw,
-      '[a-z]+'
-    ) AS fee_denom,
-    gas_used,
-    gas_wanted,
-    tx_code,
-    tx_log,
-    msgs,
-    _inserted_timestamp,
-    unique_key
-  FROM
-    txs t
-    INNER JOIN fee f
-    ON t.tx_id = f.tx_id
-    AND t.block_id = f.block_id
-    INNER JOIN spender s
-    ON t.tx_id = s.tx_id
-    AND t.block_id = s.block_id
+      '[^[:digit:]]',
+      ' '
+    )
+  ),
+  ' ',
+  0
+) AS fee,
+RIGHT(fee_raw, LENGTH(fee_raw) - LENGTH(SPLIT_PART(TRIM(REGEXP_REPLACE(fee_raw, '[^[:digit:]]', ' ')), ' ', 0))) AS fee_denom,
+gas_used,
+gas_wanted,
+tx_code,
+tx_log,
+msgs,
+_inserted_timestamp,
+unique_key
+FROM
+  txs t
+  INNER JOIN fee f
+  ON t.tx_id = f.tx_id
+  AND t.block_id = f.block_id
+  INNER JOIN spender s
+  ON t.tx_id = s.tx_id
+  AND t.block_id = s.block_id
 ),
 final_transactions AS (
   SELECT
