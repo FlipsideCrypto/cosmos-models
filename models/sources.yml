@@ -20,6 +20,9 @@ sources:
       - name: blocks_ch3
       - name: tx_search_ch3
       - name: validators_ch3
+      - name: blocks_v2
+      - name: txcount_v2
+      - name: transactions_v2
       
   - name: osmo
     database: osmosis

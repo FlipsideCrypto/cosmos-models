@@ -8,12 +8,12 @@
 
 SELECT
     VALUE,
-    _partition_by_block_id,
-    block_number AS block_id,
+    partition_key AS _partition_by_block_id,
+    DATA :block :header :height :: INT AS block_id,
     metadata,
     DATA,
     TO_TIMESTAMP(
-        _inserted_timestamp
+        inserted_timestamp
     ) AS _inserted_timestamp
 FROM
 
@@ -25,7 +25,7 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    _inserted_timestamp >= (
+    inserted_timestamp >= (
         SELECT
             MAX(_inserted_timestamp)
         FROM
@@ -33,6 +33,6 @@ WHERE
     )
 {% endif %}
 
-qualify(ROW_NUMBER() over (PARTITION BY block_number
+qualify(ROW_NUMBER() over (PARTITION BY block_id
 ORDER BY
     _inserted_timestamp DESC)) = 1

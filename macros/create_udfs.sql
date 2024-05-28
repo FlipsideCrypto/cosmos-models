@@ -5,15 +5,8 @@
 {{ create_udtf_get_base_table(
             schema = "streamline"
         ) }}
+        {{ create_udf_bulk_rest_api_v2() }}
 
-        {% endset %}
-        {% do run_query(sql) %}
-        {% set sql %}
-        {{ create_udf_get_cosmos_blocks() }}
-        {{ create_udf_get_cosmos_transactions() }}
-        {{ create_udf_get_cosmos_validators() }}
-        {{ create_udf_get_cosmos_generic() }}
-        {{ create_udf_get_cosmos_chainhead() }}
         {% endset %}
         {% do run_query(sql) %}
     {% endif %}
