@@ -9,8 +9,14 @@
 ) }}
 
 SELECT
-    DATA :height :: INT AS block_number,
-    VALUE :PAGE_NUMBER :: INT AS page_number,
+    COALESCE(
+        DATA :height,
+        VALUE :result :txs [0] :height
+    ) :: INT AS block_number,
+    COALESCE(
+        VALUE :PAGE_NUMBER,
+        metadata :request :params [2]
+    ) :: INT AS page_number,
     {{ dbt_utils.generate_surrogate_key(
         ['block_number','page_number']
     ) }} AS complete_transactions_id,
