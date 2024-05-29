@@ -9,8 +9,8 @@
 
 SELECT
     VALUE,
-    _partition_by_block_id,
-    block_number AS block_id,
+    partition_key AS _partition_by_block_id,
+    DATA :height :: INT AS block_id,
     REPLACE(
         metadata :request :params [0],
         'tx.height='
@@ -19,7 +19,7 @@ SELECT
     DATA,
     DATA :id AS unique_key,
     TO_TIMESTAMP(
-        _inserted_timestamp
+        inserted_timestamp
     ) AS _inserted_timestamp
 FROM
 
