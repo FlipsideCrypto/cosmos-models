@@ -91,7 +91,7 @@ vars:
 
     prod:
       API_INTEGRATION: aws_cosmos_api
-      EXTERNAL_FUNCTION_URI:  
+      EXTERNAL_FUNCTION_URI:  kpg3w2qkm4.execute-api.us-east-1.amazonaws.com/prod/
       ROLES:
         - AWS_LAMBDA_COSMOS_API
         - INTERNAL_DEV
