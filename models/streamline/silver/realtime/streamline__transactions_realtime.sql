@@ -23,7 +23,7 @@ WITH blocks AS (
         tx_count > 0
         AND (
             block_number > 20637874
-            OR block_numberin (
+            OR block_number IN (
                 15213800,
                 17488639,
                 17488648,
