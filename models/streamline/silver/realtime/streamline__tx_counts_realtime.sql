@@ -17,16 +17,15 @@ WITH blocks AS (
         block_number
     FROM
         {{ ref("streamline__blocks") }}
+    WHERE
+        block_number >= 15213800
     EXCEPT
     SELECT
         block_number
     FROM
         {{ ref("streamline__complete_tx_counts") }}
-    ORDER BY
-        1
-    LIMIT
-        50000
-), {# retry AS (
+),
+{# retry AS (
 SELECT
     NULL AS A.block_number
 FROM
