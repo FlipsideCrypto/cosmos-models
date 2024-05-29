@@ -11,7 +11,7 @@
 SELECT
     COALESCE(
         DATA :height,
-        VALUE :result :txs [0] :height
+        VALUE :data :result :txs [0] :height
     ) :: INT AS block_number,
     COALESCE(
         VALUE :PAGE_NUMBER,
