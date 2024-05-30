@@ -93,15 +93,16 @@ JOIN LATERAL FLATTEN(
     DATA :result :txs,
     outer => TRUE
 ) t
+WHERE
+    block_id > 20637874
 
 {% if is_incremental() %}
-WHERE
-    inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp)
-        FROM
-            {{ this }}
-    )
+AND inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp)
+    FROM
+        {{ this }}
+)
 {% endif %}
 
 qualify(ROW_NUMBER() over(PARTITION BY block_id_requested, tx_id
