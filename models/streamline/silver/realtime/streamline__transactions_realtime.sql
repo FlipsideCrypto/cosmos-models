@@ -317,7 +317,7 @@ numbers AS (
         ) :: INT AS partition_key,
         {{ target.database }}.live.udf_api(
             'POST',
-            '{service}/{x-allthatnode-api-key}',
+            '{Service}/{Authentication}',
             OBJECT_CONSTRUCT(
                 'Content-Type',
                 'application/json'
@@ -338,7 +338,7 @@ numbers AS (
                     'asc'
                 )
             ),
-            'vault/prod/cosmos/allthatnode/mainnet-archive/rpc'
+            'vault/prod/cosmos/allthatnode/mainnet'
         ) AS request,
         page_number,
         block_number AS block_number_requested

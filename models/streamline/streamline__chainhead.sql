@@ -6,7 +6,7 @@
 SELECT
     {{ target.database }}.live.udf_api(
         'POST',
-        '{service}/{x-allthatnode-api-key}',
+        '{Service}/{Authentication}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json',
@@ -23,5 +23,5 @@ SELECT
             'params',
             []
         ),
-        'vault/prod/cosmos/allthatnode/mainnet-archive/rpc'
+        'vault/prod/cosmos/allthatnode/mainnet'
     ) :data :result :sync_info :latest_block_height :: INT AS block_number

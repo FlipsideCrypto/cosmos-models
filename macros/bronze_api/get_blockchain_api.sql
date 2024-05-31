@@ -108,13 +108,13 @@ SELECT
   call,
   {{ target.database }}.live.udf_api (
     'POST',
-    '{service}/{x-allthatnode-api-key}',
+    '{Service}/{Authentication}',
     OBJECT_CONSTRUCT(
       'Content-Type',
       'application/json'
     ),
     call,
-    'Vault/prod/cosmos/allthatnode/mainnet-archive/rpc'
+    'Vault/prod/cosmos/allthatnode/mainnet'
   ) AS DATA,
   SYSDATE()
 FROM
