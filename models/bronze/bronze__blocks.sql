@@ -9,7 +9,10 @@
 SELECT
     VALUE,
     partition_key AS _partition_by_block_id,
-    DATA :block :header :height :: INT AS block_id,
+    COALESCE(
+        DATA :result :block :header :height,
+        DATA :block :header :height
+    ) :: INT AS block_id,
     metadata,
     DATA,
     TO_TIMESTAMP(
