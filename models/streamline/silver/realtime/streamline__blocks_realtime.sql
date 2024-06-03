@@ -47,7 +47,7 @@ SELECT
                 block_number :: STRING
             )
         ),
-        'vault/prod/cosmos/allthatnode/mainnet'
+        'vault/prod/cosmos/quicknode/mainnet'
     ) AS request
 FROM
     blocks

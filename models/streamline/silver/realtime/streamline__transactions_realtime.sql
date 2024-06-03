@@ -4,8 +4,8 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"transactions_v2",
-        "sql_limit" :"50000",
-        "producer_batch_size" :"10",
+        "sql_limit" :"1000",
+        "producer_batch_size" :"20",
         "worker_batch_size" :"10",
         "exploded_key": "[\"result.txs\"]",
         "sql_source" :"{{this.identifier}}" }
@@ -87,7 +87,7 @@ numbers AS (
                     'asc'
                 )
             ),
-            'vault/prod/cosmos/allthatnode/mainnet'
+            'vault/prod/cosmos/quicknode/mainnet'
         ) AS request,
         page_number,
         block_number AS block_number_requested
