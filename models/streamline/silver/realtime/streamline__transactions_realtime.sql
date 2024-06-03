@@ -94,4 +94,4 @@ numbers AS (
     FROM
         blocks_with_page_numbers
     ORDER BY
-        DESC
+        block_number DESC

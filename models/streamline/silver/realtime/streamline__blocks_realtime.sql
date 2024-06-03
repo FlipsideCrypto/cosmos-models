@@ -52,4 +52,4 @@ SELECT
 FROM
     blocks
 ORDER BY
-    DESC
+    block_number DESC
