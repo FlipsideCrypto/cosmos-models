@@ -114,7 +114,7 @@ SELECT
       'application/json'
     ),
     call,
-    'Vault/prod/cosmos/allthatnode/mainnet'
+    'vault/prod/cosmos/quicknode/mainnet'
   ) AS DATA,
   SYSDATE()
 FROM
