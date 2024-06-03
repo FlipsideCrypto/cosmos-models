@@ -5,8 +5,8 @@
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"txcount_v2",
         "sql_limit" :"1000",
-        "producer_batch_size" :"10",
-        "worker_batch_size" :"10",
+        "producer_batch_size" :"200",
+        "worker_batch_size" :"100",
         "sql_source" :"{{this.identifier}}" }
     )
 ) }}
@@ -326,7 +326,7 @@ SELECT
                 'asc'
             )
         ),
-        'vault/prod/cosmos/allthatnode/mainnet'
+        'vault/prod/cosmos/quicknode/mainnet'
     ) AS request,
     block_number
 FROM
