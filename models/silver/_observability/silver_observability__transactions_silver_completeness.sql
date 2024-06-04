@@ -11,7 +11,8 @@ WITH rel_blocks AS (
     FROM
         {{ ref('silver__blocks') }}
     WHERE
-        block_timestamp < DATEADD(
+        block_id > 20637874
+        AND block_timestamp < DATEADD(
             HOUR,
             -24,
             SYSDATE()
@@ -53,11 +54,10 @@ bronze AS (
     SELECT
         A.block_id,
         b.block_timestamp,
-        t.value :hash :: STRING AS tx_id,
+        A.tx_id,
         A._inserted_timestamp
     FROM
-        {{ ref('bronze__tx_search') }} A
-        JOIN TABLE(FLATTEN(DATA :result :txs)) t
+        {{ ref('bronze__transactions') }} A
         JOIN rel_blocks b
         ON A.block_id = b.block_id
 ),
