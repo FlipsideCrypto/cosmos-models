@@ -28,13 +28,14 @@ FROM
 {% else %}
     {{ ref('bronze__streamline_FR_transactions') }}
 {% endif %}
+WHERE
+    block_id <= 20637874
 
 {% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp)
-        FROM
-            {{ this }}
-    )
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp)
+    FROM
+        {{ this }}
+)
 {% endif %}

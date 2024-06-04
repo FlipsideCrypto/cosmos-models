@@ -30,28 +30,27 @@ WITH old_base_transactions AS (
 WHERE
     _inserted_timestamp :: DATE >= (
         SELECT
-            MAX(_inserted_timestamp) :: DATE - 2
+            DATEADD('minute', -15, MAX(_inserted_timestamp))
         FROM
-            {{ this }}
-    )
-{% endif %}
-),
-base_transactions AS (
-    SELECT
-        block_id,
-        tx_id,
-        codespace :: variant AS codespace,
-        gas_used,
-        gas_wanted,
-        tx_succeeded,
-        tx_code,
-        msgs,
-        tx_log :: STRING AS tx_log,
-        TO_TIMESTAMP(
-            _inserted_timestamp
-        ) AS _inserted_timestamp
-    FROM
-        {{ ref('bronze__transactions') }}
+            {{ this }})
+        {% endif %}
+    ),
+    base_transactions AS (
+        SELECT
+            block_id,
+            tx_id,
+            codespace :: variant AS codespace,
+            gas_used,
+            gas_wanted,
+            tx_succeeded,
+            tx_code,
+            msgs,
+            tx_log :: STRING AS tx_log,
+            TO_TIMESTAMP(
+                _inserted_timestamp
+            ) AS _inserted_timestamp
+        FROM
+            {{ ref('bronze__transactions') }}
 
 {% if is_incremental() %}
 WHERE
