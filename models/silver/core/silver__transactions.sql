@@ -56,7 +56,7 @@ WHERE
 WHERE
     _inserted_timestamp :: DATE >= (
         SELECT
-            DATEADD('minute', -15, MAX(_inserted_timestamp))
+            DATEADD('minute', -45, MAX(_inserted_timestamp))
         FROM
             {{ this }})
         {% endif %}
