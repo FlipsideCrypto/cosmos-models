@@ -10,6 +10,7 @@
 
 SELECT
     COALESCE(
+        VALUE :BLOCK_NUMBER_REQUESTED,
         DATA :height,
         VALUE :data :result :txs [0] :height
     ) :: INT AS block_number,
