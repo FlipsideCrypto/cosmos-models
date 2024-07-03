@@ -28,7 +28,7 @@ WITH old_base_transactions AS (
 
 {% if is_incremental() %}
 WHERE
-    _inserted_timestamp :: DATE >= (
+    _inserted_timestamp >= (
         SELECT
             DATEADD('minute', -15, MAX(_inserted_timestamp))
         FROM
@@ -54,7 +54,7 @@ WHERE
 
 {% if is_incremental() %}
 WHERE
-    _inserted_timestamp :: DATE >= (
+    _inserted_timestamp >= (
         SELECT
             DATEADD('minute', -90, MAX(_inserted_timestamp))
         FROM
