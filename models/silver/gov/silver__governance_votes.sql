@@ -92,6 +92,11 @@ fin AS (
         j :option :: STRING AS vote_option_raw,
         j :weight :: STRING AS vote_weight_raw,
         CASE
+            WHEN TRY_PARSE_JSON(
+                vote_option_raw
+            ) IS NOT NULL THEN TRY_PARSE_JSON(
+                vote_option_raw
+            ) :option :: STRING
             WHEN vote_option_raw ILIKE '%option%weight%' THEN REPLACE(
                 SPLIT_PART(
                     vote_option_raw,
@@ -103,6 +108,9 @@ fin AS (
             ELSE vote_option_raw
         END :: STRING AS vote_option,
         CASE
+            WHEN TRY_PARSE_JSON(vote_option_raw) IS NOT NULL THEN TRY_PARSE_JSON(
+                vote_option_raw
+            ) :weight :: STRING
             WHEN vote_option_raw ILIKE '%option%weight%' THEN REPLACE(
                 REPLACE(
                     SPLIT_PART(
