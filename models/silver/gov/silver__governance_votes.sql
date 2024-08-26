@@ -54,11 +54,10 @@ WITH base_atts AS (
                 msg_type = 'message'
                 AND attribute_key = 'sender'
             )
-        )
-        AND COALESCE(
-            b.value,
-            ''
-        ) NOT LIKE '%option%weight%'
+        ) {# AND COALESCE(
+        b.value,
+        ''
+) NOT LIKE '%option%weight%' #}
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
