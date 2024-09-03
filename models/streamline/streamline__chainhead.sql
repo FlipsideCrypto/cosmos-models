@@ -23,5 +23,5 @@ SELECT
             'params',
             []
         ),
-        'vault/prod/cosmos/allthatnode/mainnet'
+        'vault/prod/cosmos/quicknode/mainnet'
     ) :data :result :sync_info :latest_block_height :: INT AS block_number
