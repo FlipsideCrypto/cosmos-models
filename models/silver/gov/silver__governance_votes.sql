@@ -34,17 +34,10 @@ WITH base_atts AS (
     FROM
         {{ ref('silver__msg_attributes') }},
         LATERAL FLATTEN(
-            TRY_PARSE_JSON(
-                CASE
-                    WHEN attribute_key = 'option'
-                    AND attribute_value LIKE '%option%option%' THEN '[' || REGEXP_REPLACE(
-                        attribute_value,
-                        '\}\n',
-                        '\},'
-                    ) || ']'
-                    ELSE attribute_value
-                END
-            ),
+            COALESCE(TRY_PARSE_JSON(attribute_value), TRY_PARSE_JSON(CASE
+            WHEN attribute_key = 'option'
+            AND attribute_value LIKE '%option%option%' THEN '[' || REGEXP_REPLACE(attribute_value, '\}\n', '\},') || ']'
+            ELSE attribute_value END)),
             outer => TRUE
         ) b
     WHERE
@@ -152,10 +145,12 @@ fin_fin AS (
         A.tx_succeeded,
         COALESCE(
             A.voter,
+            weight_votes.voter,
             b.voter
         ) AS voter,
         COALESCE(
             A.proposal_id,
+            weight_votes.proposal_id,
             C.proposal_id
         ) AS proposal_id,
         CASE
@@ -172,6 +167,20 @@ fin_fin AS (
         fin A
         LEFT JOIN (
             SELECT
+                DISTINCT tx_id,
+                msg_index,
+                voter,
+                proposal_id
+            FROM
+                fin
+            WHERE
+                voter IS NOT NULL
+                AND proposal_id IS NOT NULL
+        ) weight_votes
+        ON A.tx_id = weight_votes.tx_id
+        AND A.msg_index = weight_votes.msg_index
+        LEFT JOIN (
+            SELECT
                 tx_id,
                 msg_group,
                 msg_sub_group,
@@ -186,6 +195,7 @@ fin_fin AS (
         AND A.msg_group = b.msg_group
         AND A.msg_sub_group = b.msg_sub_group
         AND A.voter IS NULL
+        AND weight_votes.voter IS NULL
         LEFT JOIN (
             SELECT
                 tx_id,
@@ -202,6 +212,7 @@ fin_fin AS (
         AND A.msg_group = C.msg_group
         AND A.msg_sub_group = C.msg_sub_group
         AND A.proposal_id IS NULL
+        AND weight_votes.proposal_id IS NULL
 )
 SELECT
     block_id,
