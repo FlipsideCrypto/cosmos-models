@@ -20,6 +20,7 @@ WITH blocks AS (
     WHERE
         (
             block_number > 20637874
+            AND block_number NOT IN (21208991)
             OR block_number IN (
                 15213800,
                 17488639,

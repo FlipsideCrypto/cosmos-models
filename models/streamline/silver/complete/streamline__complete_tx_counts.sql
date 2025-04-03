@@ -29,6 +29,7 @@ WHERE
         FROM
             {{ this }}
     )
+    AND block_number NOT IN (21208991)
 {% else %}
     {{ ref('bronze__streamline_FR_tx_counts') }}
 {% endif %}
