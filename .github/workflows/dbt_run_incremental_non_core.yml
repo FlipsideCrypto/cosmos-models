@@ -47,3 +47,10 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt run -m models/silver/gov models/gold/gov 1+models/gold/stats/stats__ez_core_metrics_hourly.sql
+
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

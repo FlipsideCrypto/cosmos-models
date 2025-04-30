@@ -47,3 +47,10 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt run -m models/bronze models/silver/core models/gold/core --exclude models/bronze/genesis_backfill models/silver/core/genesis_backfill
+
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
