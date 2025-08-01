@@ -3,7 +3,6 @@
     unique_key = "tx_id",
     incremental_strategy = 'delete+insert',
     cluster_by = 'block_timestamp::DATE',
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
 ) }}
 
 WITH old_base_transactions AS (
