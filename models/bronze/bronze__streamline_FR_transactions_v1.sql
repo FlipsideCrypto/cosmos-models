@@ -1,5 +1,6 @@
 {{ config (
-    materialized = 'view'
+    materialized = 'view',
+    enabled = false
 ) }}
 
 {% set model = this.identifier.split("_") [-1] %}

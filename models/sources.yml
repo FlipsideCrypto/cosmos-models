@@ -6,20 +6,23 @@ sources:
     schema: |
       {{ "COSMOS_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "COSMOS" }}
     tables:
-      - name: blocks
-      - name: transactions
-        identifier: tx_search
-      - name: validators
+      # - name: blocks
+      # - name: transactions
+      #   identifier: tx_search
+      # - name: validators
       - name: blockchain
       - name: blocks_ch1
+        identifier: migrated_blocks_ch1
       - name: tx_search_ch1
-      - name: validators_ch1
+        identifier: migrated_tx_search_ch1
       - name: blocks_ch2
+        identifier: migrated_blocks_ch2
       - name: tx_search_ch2
-      - name: validators_ch2
+        identifier: migrated_tx_search_ch2
       - name: blocks_ch3
+        identifier: migrated_blocks_ch3
       - name: tx_search_ch3
-      - name: validators_ch3
+        identifier: migrated_tx_search_ch3
       - name: blocks_v2
       - name: txcount_v2
       - name: transactions_v2
