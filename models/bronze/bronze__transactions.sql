@@ -4,7 +4,8 @@
     unique_key = ['block_id_requested','tx_id'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
-    cluster_by = ['_inserted_timestamp::DATE' ]
+    cluster_by = ['_inserted_timestamp::DATE' ],
+    full_refresh = false
 ) }}
 -- depends_on: {{ ref('bronze__streamline_transactions') }}
 -- depends_on: {{ ref('bronze__streamline_FR_transactions') }}

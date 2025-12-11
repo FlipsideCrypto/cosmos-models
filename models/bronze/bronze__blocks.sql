@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'block_id',
-    cluster_by = ['_inserted_timestamp::date']
+    cluster_by = ['_inserted_timestamp::date'],
+    full_refresh = false
 ) }}
 -- depends_on: {{ ref('bronze__streamline_blocks') }}
 -- depends_on: {{ ref('bronze__streamline_FR_blocks') }}

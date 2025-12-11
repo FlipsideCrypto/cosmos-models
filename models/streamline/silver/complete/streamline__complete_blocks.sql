@@ -5,6 +5,7 @@
     unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
     merge_exclude_columns = ["inserted_timestamp"],
+    full_refresh = false
 ) }}
 
 SELECT
